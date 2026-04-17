@@ -1,0 +1,37 @@
+@use '../../styles/variables' as *;
+
+.hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.content {
+    text-align: center;
+    z-index: 1;
+}
+
+.name {
+    font-size: $font-size-hero;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: $space-sm;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.char {
+    display: inline-block;
+    will-change: transform, opacity;
+}
+
+.tagline {
+    font-size: $font-size-tagline;
+    font-weight: 300;
+    color: $color-text-muted;
+    letter-spacing: 0.02em;
+}

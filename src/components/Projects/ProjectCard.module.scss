@@ -1,0 +1,119 @@
+@use '../../styles/variables' as *;
+
+.card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-md;
+    padding: $space-lg 0;
+    border-bottom: 1px solid $color-border;
+    will-change: transform, opacity;
+
+    @include respond-to($bp-tablet) {
+        grid-template-columns: 1fr 1fr;
+        gap: $space-lg;
+        align-items: center;
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+// Alternating layout on desktop
+.even {
+    @include respond-to($bp-tablet) {
+        .imageWrapper {
+            order: 1;
+        }
+
+        .info {
+            order: 2;
+        }
+    }
+}
+
+.odd {
+    @include respond-to($bp-tablet) {
+        .imageWrapper {
+            order: 2;
+        }
+
+        .info {
+            order: 1;
+        }
+    }
+}
+
+.imageWrapper {
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: $color-surface;
+    aspect-ratio: 16/10;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    will-change: transform;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+}
+
+.title {
+    font-size: $font-size-2xl;
+    font-weight: 700;
+
+    a {
+        color: $color-text;
+        transition: color $transition-fast;
+
+        &:hover {
+            color: $color-accent;
+        }
+    }
+}
+
+.linkIcon {
+    display: inline-block;
+    margin-left: $space-xs;
+    font-size: 0.7em;
+    opacity: 0.5;
+    transition: opacity $transition-fast;
+
+    a:hover & {
+        opacity: 1;
+    }
+}
+
+.description {
+    font-size: $font-size-lg;
+    color: $color-text-muted;
+    line-height: 1.6;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-xs;
+    margin-top: $space-xs;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.25em 0.75em;
+    font-size: $font-size-sm;
+    color: $color-accent;
+    border: 1px solid $color-accent;
+    border-radius: 100px;
+    transition: background-color $transition-fast, color $transition-fast;
+
+    &:hover {
+        background-color: $color-accent;
+        color: $color-bg;
+    }
+}

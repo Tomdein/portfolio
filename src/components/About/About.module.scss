@@ -1,0 +1,29 @@
+@use '../../styles/variables' as *;
+
+.about {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-2xl $container-padding;
+    min-height: 60vh;
+}
+
+.text {
+    @include container-narrow;
+    font-size: $font-size-about;
+    font-weight: 300;
+    line-height: 1.8;
+    text-align: center;
+    color: $color-text;
+}
+
+.word {
+    display: inline-block;
+    overflow: hidden;
+    margin-right: 0.3em;
+}
+
+.wordInner {
+    display: inline-block;
+    will-change: transform, opacity;
+}

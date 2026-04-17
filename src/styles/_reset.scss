@@ -1,0 +1,72 @@
+// ──────────────────────────────────
+// CSS Reset & Global Styles
+// ──────────────────────────────────
+@use './variables' as *;
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: auto; // GSAP handles smooth scroll
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    line-height: 1.6;
+    color: $color-text;
+    background-color: $color-bg;
+    overflow-x: hidden;
+}
+
+a {
+    color: $color-accent;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+        color: $color-accent-hover;
+    }
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $font-family-heading;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+}
+
+::selection {
+    background-color: $color-accent;
+    color: $color-bg;
+}

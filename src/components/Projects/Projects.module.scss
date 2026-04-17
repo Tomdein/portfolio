@@ -1,0 +1,21 @@
+@use '../../styles/variables' as *;
+
+.projects {
+    padding: $space-xl 0 $space-2xl;
+}
+
+.container {
+    @include container;
+}
+
+.heading {
+    font-size: $font-size-3xl;
+    font-weight: 800;
+    margin-bottom: $space-lg;
+    letter-spacing: -0.02em;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+}
