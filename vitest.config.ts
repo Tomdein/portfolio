@@ -2,20 +2,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import markdownFrontmatter from './plugins/vite-plugin-markdown-frontmatter'
 
 export default defineConfig({
-    plugins: [react()],
+    plugins: [markdownFrontmatter(), react()],
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
-        },
-    },
-    assetsInclude: ['**/*.md'],
-    css: {
-        preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler',
-            },
         },
     },
     test: {

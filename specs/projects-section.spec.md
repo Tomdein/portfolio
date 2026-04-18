@@ -47,9 +47,10 @@ Optional longer description in markdown body.
 
 ## Data Loading
 
-- At **build time**, Vite imports all `.md` files from `content/projects/` using `import.meta.glob`
-- Frontmatter is parsed and projects are sorted by `order` field
-- No runtime fetching — all data is bundled at build
+- A custom Vite plugin (`plugins/vite-plugin-markdown-frontmatter.ts`) transforms `.md` files into JS modules exporting parsed JSON at **build time**
+- `import.meta.glob` imports the pre-parsed data — no runtime parsing, no Node.js code in the browser
+- Projects are sorted by `order` field
+- No `gray-matter` or `marked` in the browser bundle — all parsing happens in Node.js during build
 
 `[@test] ../src/utils/loadProjects.test.ts`
 

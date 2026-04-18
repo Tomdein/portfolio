@@ -47,8 +47,6 @@ Required production dependencies:
 
 - `react`, `react-dom`
 - `gsap` (with ScrollTrigger)
-- `gray-matter` or equivalent for parsing markdown frontmatter
-- `marked` or equivalent for rendering markdown
 
 Required dev dependencies:
 
@@ -56,5 +54,12 @@ Required dev dependencies:
 - `@vitejs/plugin-react`
 - `typescript`
 - `sass`
+- `gray-matter` (build-time only — used by Vite plugin, never shipped to browser)
 - `vitest` + `@testing-library/react` for testing
 - `eslint` with React + TypeScript config
+
+## Build-Time Markdown Plugin
+
+- A custom Vite plugin (`plugins/vite-plugin-markdown-frontmatter.ts`) transforms `.md` files into JS modules at build time
+- `gray-matter` parses frontmatter in Node.js during the build — no Node.js code ships to the browser
+- The browser bundle contains only React, GSAP, and pre-parsed JSON project data
