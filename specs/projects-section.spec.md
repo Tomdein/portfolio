@@ -68,12 +68,21 @@ Each card displays:
 
 ## GSAP Scroll Animations
 
-- Each project card starts hidden via CSS (`opacity: 0; transform: translateY(60px)`) and animates to visible using `gsap.to()` targeting `opacity: 1, y: 0` as it enters the viewport
-- Cards stagger slightly if multiple are visible simultaneously
-- Parallax effect on project images (subtle vertical shift relative to card) using `gsap.to()` with scrub
-- Animation via ScrollTrigger with `start: "top 85%"`
+### Card Entrance & Exit
+
+- Each project card starts hidden via CSS (`opacity: 0; transform: translateY(60px)`)
+- Uses `gsap.to()` with **keyframes** and `scrub: 0.5` for scroll-linked animation:
+  - Enters: translates to `y: 0, opacity: 1` (ease: `sine.in`)
+  - Holds visible through mid-scroll
+  - Exits: translates to `y: -20, opacity: 0` (ease: `sine.out`)
+- ScrollTrigger range: `start: "top 70%"`, `end: "bottom 40%"`, `toggleActions: "play complete none reverse"`, `fastScrollEnd: true`
 
 **Important:** Card entrance animations must use CSS for the initial hidden state and `gsap.to()` to animate to the visible state. Do **not** use `gsap.from()` — it causes elements to flash or fail to animate when ScrollTrigger's inline styles conflict with CSS.
+
+### Image Parallax
+
+- Image element (the `<img>` child inside the image wrapper) has CSS `transform: scale(1.2) translateY(-10%)` as its initial state to provide overflow for the parallax range
+- `gsap.to()` on the image with `yPercent: 20`, scrub, and `ease: "none"` across the full card visibility range (`start: "top bottom"`, `end: "bottom top"`)
 
 `[@test] ../src/components/Projects/ProjectCard.animation.test.tsx`
 

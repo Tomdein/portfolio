@@ -21,8 +21,8 @@ A brief, visually engaging introduction that appears below the hero.
 ## GSAP Scroll Animation
 
 - Text reveals on scroll using ScrollTrigger
-- Words or lines animate in sequentially (staggered fade + slight upward translate)
-- Animation triggers when the section enters the viewport (~80% from top)
+- Words animate in sequentially (staggered fade + slight upward translate via `gsap.from()` on inner word spans)
+- ScrollTrigger range: `start: "top 70%"`, `end: "top -10%"` — gives a longer scroll distance for the reveal to complete
 - scrub: smooth tie to scroll position for fluid feel
 
 `[@test] ../src/components/About/About.animation.test.tsx`
