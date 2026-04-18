@@ -1,4 +1,5 @@
 import type { FooterConfig } from '@/types/config';
+import { mdToHtml, mdToInlineHtml } from '@/utils/markdown';
 import styles from './Footer.module.scss';
 
 interface FooterProps {
@@ -14,9 +15,17 @@ export default function Footer({ config }: FooterProps) {
         <footer className={styles.footer}>
             <div className={styles.content}>
                 <blockquote className={styles.motto}>
-                    <p className={styles.quote}>&ldquo;{config.motto}&rdquo;</p>
+                    <div
+                        className={styles.quote}
+                        dangerouslySetInnerHTML={{ __html: mdToHtml(config.motto) }}
+                    />
                     {config.author && (
-                        <cite className={styles.author}>&mdash; {config.author}</cite>
+                        <cite
+                            className={styles.author}
+                            dangerouslySetInnerHTML={{
+                                __html: `\u2014 ${mdToInlineHtml(config.author)}`,
+                            }}
+                        />
                     )}
                 </blockquote>
             </div>

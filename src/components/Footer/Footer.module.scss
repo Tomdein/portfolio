@@ -23,6 +23,10 @@
     color: $color-text-muted;
     line-height: 1.6;
     margin: 0 0 $space-sm;
+
+    p {
+        margin: 0;
+    }
 }
 
 .author {

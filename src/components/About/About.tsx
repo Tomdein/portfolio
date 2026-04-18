@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { AboutConfig } from '@/types/config';
+import { mdToHtml, wrapTextWords } from '@/utils/markdown';
 import styles from './About.module.scss';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,7 +14,16 @@ interface AboutProps {
 
 export default function About({ config }: AboutProps) {
     const sectionRef = useRef<HTMLElement>(null);
-    const words = config.text.split(' ');
+    const textRef = useRef<HTMLDivElement>(null);
+
+    // Inject markdown HTML then wrap each word in animated spans.
+    // Declared before useGSAP so it runs first (both are layout effects).
+    useLayoutEffect(() => {
+        const container = textRef.current;
+        if (!container) return;
+        container.innerHTML = mdToHtml(config.text);
+        wrapTextWords(container, styles.word, styles.wordInner);
+    }, [config.text]);
 
     useGSAP(
         () => {
@@ -53,14 +63,8 @@ export default function About({ config }: AboutProps) {
 
     return (
         <section ref={sectionRef} className={styles.about}>
-            <p className={styles.text}>
-                {words.map((word, i) => (
-                    <span key={i} className={styles.word}>
-                        <span className={styles.wordInner}>{word}</span>
-                        {i < words.length - 1 ? ' ' : ''}
-                    </span>
-                ))}
-            </p>
+            {/* Children omitted intentionally — innerHTML managed by useLayoutEffect above */}
+            <div ref={textRef} className={styles.text} />
         </section>
     );
 }

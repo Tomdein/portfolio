@@ -35,4 +35,8 @@
     max-width: $container-max-width;
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
     will-change: transform, opacity;
+
+    p {
+        margin: 0;
+    }
 }

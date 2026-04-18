@@ -15,6 +15,11 @@
     line-height: 1.8;
     text-align: center;
     color: $color-text;
+
+    // Showdown wraps content in <p> — reset its margin so it doesn't add extra spacing
+    p {
+        margin: 0;
+    }
 }
 
 .word {

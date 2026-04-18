@@ -3,6 +3,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { TaglineConfig } from '@/types/config';
+import { mdToHtml } from '@/utils/markdown';
 import styles from './Tagline.module.scss';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +15,7 @@ interface TaglineProps {
 export default function Tagline({ config }: TaglineProps) {
     const sectionRef = useRef<HTMLElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
-    const textRef = useRef<HTMLParagraphElement>(null);
+    const textRef = useRef<HTMLDivElement>(null);
 
     useGSAP(
         () => {
@@ -67,9 +68,11 @@ export default function Tagline({ config }: TaglineProps) {
             <div ref={imageRef} className={styles.imageWrapper}>
                 <img src={config.backgroundImage} alt="" className={styles.image} />
             </div>
-            <p ref={textRef} className={styles.text}>
-                {config.text}
-            </p>
+            <div
+                ref={textRef}
+                className={styles.text}
+                dangerouslySetInnerHTML={{ __html: mdToHtml(config.text) }}
+            />
         </section>
     );
 }

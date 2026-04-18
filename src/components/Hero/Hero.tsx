@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { prepareWithSegments, measureLineStats } from '@chenglou/pretext';
 import type { HeroConfig } from '@/types/config';
+import { mdToInlineHtml } from '@/utils/markdown';
 import styles from './Hero.module.scss';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -172,9 +173,11 @@ export default function Hero({ config, infoLineReady }: HeroProps) {
                         </span>
                     ))}
                 </h1>
-                <p ref={infoLineRef} className={styles.infoLine}>
-                    {config.infoLine}
-                </p>
+                <p
+                    ref={infoLineRef}
+                    className={styles.infoLine}
+                    dangerouslySetInnerHTML={{ __html: mdToInlineHtml(config.infoLine) }}
+                />
             </div>
         </section>
     );

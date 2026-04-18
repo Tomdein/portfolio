@@ -3,6 +3,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ProjectItem } from '@/types/config';
+import { mdToHtml } from '@/utils/markdown';
 import styles from './ProjectCard.module.scss';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -84,7 +85,10 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                     )}
                 </h3>
 
-                <p className={styles.description}>{project.description}</p>
+                <div
+                    className={styles.description}
+                    dangerouslySetInnerHTML={{ __html: mdToHtml(project.description) }}
+                />
 
                 <ul className={styles.tags}>
                     {project.tags.map((tag) => (
