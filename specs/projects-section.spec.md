@@ -68,10 +68,12 @@ Each card displays:
 
 ## GSAP Scroll Animations
 
-- Each project card fades + slides in as it enters the viewport
+- Each project card starts hidden via CSS (`opacity: 0; transform: translateY(60px)`) and animates to visible using `gsap.to()` targeting `opacity: 1, y: 0` as it enters the viewport
 - Cards stagger slightly if multiple are visible simultaneously
-- Parallax effect on project images (subtle vertical shift relative to card)
+- Parallax effect on project images (subtle vertical shift relative to card) using `gsap.to()` with scrub
 - Animation via ScrollTrigger with `start: "top 85%"`
+
+**Important:** Card entrance animations must use CSS for the initial hidden state and `gsap.to()` to animate to the visible state. Do **not** use `gsap.from()` — it causes elements to flash or fail to animate when ScrollTrigger's inline styles conflict with CSS.
 
 `[@test] ../src/components/Projects/ProjectCard.animation.test.tsx`
 

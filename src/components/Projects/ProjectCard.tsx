@@ -22,16 +22,16 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         const image = imageRef.current;
         if (!card || !image) return;
 
-        // Card fade + slide in
-        gsap.from(card, {
+        // Card fade + slide in (starts at opacity 0, y 60 via CSS)
+        gsap.to(card, {
             scrollTrigger: {
                 trigger: card,
                 start: 'top 85%',
                 end: 'top 50%',
                 toggleActions: 'play none none reverse',
             },
-            y: 60,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             duration: 0.8,
             ease: 'power2.out',
         });
