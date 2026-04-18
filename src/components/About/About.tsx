@@ -26,8 +26,8 @@ export default function About() {
         gsap.from(wordInners, {
             scrollTrigger: {
                 trigger: section,
-                start: 'top 80%',
-                end: 'top 20%',
+                start: 'top 70%',
+                end: 'top -10%',
                 scrub: true,
             },
             y: 20,

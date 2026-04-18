@@ -26,25 +26,30 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         gsap.to(card, {
             scrollTrigger: {
                 trigger: card,
-                start: 'top 85%',
-                end: 'top 50%',
-                toggleActions: 'play none none reverse',
+                start: 'top 70%',
+                end: 'bottom 40%',
+                toggleActions: 'play complete none reverse',
+                scrub: 0.5,
+                // markers: { indent: 200 * index },
+                fastScrollEnd: true,
             },
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: 'power2.out',
+            keyframes: [
+                // { y: 60, opacity: 0, duration: 0.5, ease: 'none', at: 0 },
+                { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.1 },
+                { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.7 },
+                { y: -20, opacity: 0, duration: 0.5, ease: 'sine.out', at: 1 },
+            ],
         });
 
         // Parallax on image
-        gsap.to(image, {
+        gsap.to(image.firstChild, {
             scrollTrigger: {
                 trigger: card,
                 start: 'top bottom',
                 end: 'bottom top',
                 scrub: true,
             },
-            y: -40,
+            yPercent: 20,
             ease: 'none',
         });
 
