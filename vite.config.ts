@@ -6,8 +6,9 @@ import markdownFrontmatter from './plugins/vite-plugin-markdown-frontmatter'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    port: 3000,
+    port: 5173,
     host: true,
+    allowedHosts: ['tomdein.deini.eu'],
   },
   plugins: [markdownFrontmatter(), react()],
   resolve: {
