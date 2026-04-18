@@ -19,6 +19,10 @@ motto: "The only way to do great work is to love what you do."
 author: "Steve Jobs"
 ```
 
+- `motto` and `author` support Markdown formatting and raw HTML (sanitized by DOMPurify)
+- `motto` rendered via `mdToHtml()` into a `<div>` — block-level structure preserved
+- `author` rendered via `mdToInlineHtml()` inside a `<cite>` — outer `<p>` stripped to avoid nesting
+
 ## Layout
 
 - If `motto` and `author` are provided: displays a quoted motto with the author name slightly offset vertically beside it

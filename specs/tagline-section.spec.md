@@ -19,6 +19,9 @@ text: "A Maker, Programmer and Mathematician"
 backgroundImage: "/images/tagline-bg.webp"
 ```
 
+- `text` supports Markdown formatting (bold, italic, etc.) via showdown + DOMPurify; rendered into a `<div>` with `dangerouslySetInnerHTML`
+- `backgroundImage` — path to a B&W background image (relative to `public/`)
+
 ## Layout
 
 - Full-width section, generous vertical height

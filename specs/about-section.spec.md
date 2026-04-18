@@ -15,12 +15,19 @@ A brief, visually engaging introduction that appears below the tagline section.
 - Short paragraph (2-4 sentences) about the person
 - Text loaded from `about.yaml` at runtime (see [yaml-config spec](yaml-config.spec.md))
 - No photo or avatar — text only for clean minimalism
+- Text supports Markdown formatting (bold, italic, links, etc.) via showdown + DOMPurify
 
 `[@test] ../src/components/About/About.test.tsx`
 
 ## GSAP Scroll Animation
 
 Uses `useGSAP()` hook (not `useEffect`).
+
+### Word Splitting
+
+- Markdown HTML is injected into a `<div ref={textRef}>` via `useLayoutEffect` using `mdToHtml()`
+- After injection, `wrapTextWords()` walks all text nodes in the container and wraps each word in `<span class=word><span class=wordInner>word</span></span>`
+- `useLayoutEffect` is declared **before** `useGSAP` so word spans exist when GSAP queries them (both run as layout effects in declaration order)
 
 ### Entrance
 

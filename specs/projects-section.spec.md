@@ -23,7 +23,7 @@ A vertically scrollable list of project cards. Content is driven by `projects.ya
 ### Required Fields
 
 - `title` — project name
-- `description` — short summary (shown on card)
+- `description` — short summary (shown on card); supports Markdown via showdown + DOMPurify, rendered into a `<div>` with `dangerouslySetInnerHTML`
 - `tags` — array of technology/skill tags
 - `image` — path to project screenshot/image (relative to `public/`)
 - `order` — numeric sort order (ascending)

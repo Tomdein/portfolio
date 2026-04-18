@@ -21,6 +21,8 @@ lastName: "Deingruber"
 infoLine: "Ing. — MSc Computer Science"
 ```
 
+- `infoLine` — subtitle shown below the name; supports Markdown formatting via showdown + DOMPurify; rendered via `mdToInlineHtml()` (outer `<p>` stripped to avoid nesting inside the existing `<p>` element)
+
 ## Layout
 
 - Full viewport height (`100vh`)

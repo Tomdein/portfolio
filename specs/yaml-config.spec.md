@@ -10,6 +10,7 @@ targets:
   - ../public/content/footer.yaml
   - ../public/content/site.yaml
   - ../src/utils/loadConfig.ts
+  - ../src/utils/markdown.ts
   - ../src/types/config.ts
 ---
 
@@ -29,6 +30,18 @@ public/content/
   footer.yaml
   site.yaml
 ```
+
+## Markdown Rendering
+
+All freeform text fields support Markdown formatting and raw HTML via `src/utils/markdown.ts`:
+
+- `mdToHtml(md)` — converts Markdown to sanitized HTML (showdown + DOMPurify); keeps block-level `<p>` wrapping; used with a `<div dangerouslySetInnerHTML>` container
+- `mdToInlineHtml(md)` — same as above but strips the outer `<p>` tag; used when injecting into an existing block element (`<p>`, `<cite>`) to avoid invalid nesting
+- Raw HTML in YAML values passes through showdown and is sanitized by DOMPurify (unsafe attributes like `style` may be stripped)
+
+Markdown-enabled fields: `about.text`, `tagline.text`, `footer.motto`, `footer.author`, `projects[].description`, `hero.infoLine`
+
+`[@test] ../src/utils/loadConfig.test.ts`
 
 ## Runtime Loading
 
@@ -51,7 +64,7 @@ infoLine: "Ing. — MSc Computer Science"
 - `title` — honorific title (e.g., "Ing.", "Dr.")
 - `firstName` — first name
 - `lastName` — last name
-- `infoLine` — subtitle shown below the name (replaces the old tagline)
+- `infoLine` — subtitle shown below the name; supports Markdown (inline)
 
 ## about.yaml
 
@@ -59,7 +72,7 @@ infoLine: "Ing. — MSc Computer Science"
 text: "Short paragraph about the person. Can be 2-4 sentences."
 ```
 
-- `text` — the about section paragraph content
+- `text` — the about section paragraph content; supports Markdown
 
 ## tagline.yaml
 
@@ -68,7 +81,7 @@ text: "A Maker, Programmer and Mathematician"
 backgroundImage: "/images/tagline-bg.webp"
 ```
 
-- `text` — tagline text displayed over the background image
+- `text` — tagline text displayed over the background image; supports Markdown
 - `backgroundImage` — path to a B&W background image (relative to `public/`)
 
 ## projects.yaml
@@ -89,7 +102,7 @@ projects:
 ```
 
 - Array of project objects sorted by `order` (ascending)
-- Required fields per project: `title`, `description`, `tags`, `image`, `order`
+- `description` — short summary (shown on card); supports Markdown
 - Optional: `link`
 
 ## contacts.yaml
@@ -117,8 +130,8 @@ motto: "The only way to do great work is to love what you do."
 author: "Steve Jobs"
 ```
 
-- `motto` — optional quoted text; if omitted, footer renders as an empty spacer
-- `author` — name displayed next to the motto, slightly offset vertically
+- `motto` — optional quoted text; if omitted, footer renders as an empty spacer; supports Markdown and raw HTML (sanitized)
+- `author` — name displayed next to the motto, slightly offset vertically; supports Markdown (inline)
 
 ## site.yaml
 
