@@ -1,34 +1,22 @@
 ---
 name: Projects Section
-description: Scrollable list of projects driven by markdown data files
+description: Scrollable list of projects driven by YAML config
 targets:
   - ../src/components/Projects/Projects.tsx
   - ../src/components/Projects/Projects.module.scss
   - ../src/components/Projects/ProjectCard.tsx
   - ../src/components/Projects/ProjectCard.module.scss
-  - ../content/projects/*.md
 ---
 
 # Projects Section
 
-A vertically scrollable list of project cards. Content is driven by markdown files.
+A vertically scrollable list of project cards. Content is driven by `projects.yaml` (see [yaml-config spec](yaml-config.spec.md)).
 
-## Project Data Format
+## Data Loading
 
-Each project is a `.md` file in `content/projects/` with YAML frontmatter:
-
-```yaml
----
-title: "Project Name"
-description: "One-line summary of the project"
-tags: ["React", "TypeScript", "GSAP"]
-image: "/images/projects/project-name.webp"
-link: "https://github.com/user/project"
-order: 1
----
-
-Optional longer description in markdown body.
-```
+- Project data loaded at runtime from `projects.yaml` via the shared YAML config loader
+- Projects are sorted by `order` field (ascending)
+- `js-yaml` parses the YAML in the browser
 
 `[@test] ../src/components/Projects/Projects.test.tsx`
 
@@ -44,15 +32,6 @@ Optional longer description in markdown body.
 
 - `link` — URL to project repo or live demo
 - Markdown body — extended description (reserved for future detail view)
-
-## Data Loading
-
-- A custom Vite plugin (`plugins/vite-plugin-markdown-frontmatter.ts`) transforms `.md` files into JS modules exporting parsed JSON at **build time**
-- `import.meta.glob` imports the pre-parsed data — no runtime parsing, no Node.js code in the browser
-- Projects are sorted by `order` field
-- No `gray-matter` or `marked` in the browser bundle — all parsing happens in Node.js during build
-
-`[@test] ../src/utils/loadProjects.test.ts`
 
 ## Project Card
 

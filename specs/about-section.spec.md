@@ -13,7 +13,7 @@ A brief, visually engaging introduction that appears below the hero.
 ## Content
 
 - Short paragraph (2-4 sentences) about the person
-- Placeholder text provided initially, easily editable
+- Text loaded from `about.yaml` at runtime (see [yaml-config spec](yaml-config.spec.md))
 - No photo or avatar — text only for clean minimalism
 
 `[@test] ../src/components/About/About.test.tsx`

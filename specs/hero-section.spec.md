@@ -14,8 +14,7 @@ The first screen visitors see. Occupies the full viewport height.
 
 - Full viewport height (`100vh`)
 - Name and tagline centered vertically and horizontally
-- Name: **Tomas Deingruber**
-- Tagline: **A Maker, Programmer and Mathematician**
+- Name and tagline are loaded from `hero.yaml` at runtime (see [yaml-config spec](yaml-config.spec.md))
 - Minimal, clean design with generous whitespace
 
 `[@test] ../src/components/Hero/Hero.test.tsx`
