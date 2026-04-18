@@ -65,6 +65,12 @@ Each card displays:
 
 `[@test] ../src/components/Projects/ProjectCard.animation.test.tsx`
 
+## "Projects" Heading Animation
+
+- The "Projects" heading uses an entrance-only animation (no exit)
+- Fades in from below with scrub as it enters the viewport
+- Uses `gsap.from()` with ScrollTrigger, `start: "top 70%"`, scrub
+
 ## Layout
 
 - Vertical stack of full-width cards

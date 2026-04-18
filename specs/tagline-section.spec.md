@@ -1,0 +1,53 @@
+---
+name: Tagline Section
+description: Full-width section with B&W background image parallax and animated tagline text
+targets:
+  - ../src/components/Tagline/Tagline.tsx
+  - ../src/components/Tagline/Tagline.module.scss
+---
+
+# Tagline Section
+
+A visual break between the hero and about sections. Displays a single tagline over a large black & white background image.
+
+## Data
+
+Loaded from `tagline.yaml` at runtime (see [yaml-config spec](yaml-config.spec.md)):
+
+```yaml
+text: "A Maker, Programmer and Mathematician"
+backgroundImage: "/images/tagline-bg.webp"
+```
+
+## Layout
+
+- Full-width section, generous vertical height
+- Large B&W background image covers the entire section
+- Tagline text centered over the image
+- Text should have sufficient contrast against the image (text shadow or overlay)
+
+`[@test] ../src/components/Tagline/Tagline.test.tsx`
+
+## GSAP Scroll Animation
+
+Uses `useGSAP()` hook (not `useEffect`).
+
+### Background Image Parallax
+
+- Background image moves slightly faster than the content during scroll
+- Creates a depth/parallax effect
+- Implemented via `gsap.to()` with ScrollTrigger scrub on the image element
+
+### Tagline Text
+
+- Text animates in (fade + translate) as the section enters the viewport
+- Text animates out (fade + translate) as the section exits the viewport
+- Scroll-linked via ScrollTrigger with scrub
+
+`[@test] ../src/components/Tagline/Tagline.animation.test.tsx`
+
+## Styling
+
+- Background image: `object-fit: cover`, B&W, full bleed
+- Text: large, bold, white with text-shadow or semi-transparent dark overlay for legibility
+- Responsive: text scales appropriately on mobile

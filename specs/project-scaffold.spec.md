@@ -1,6 +1,6 @@
 ---
 name: Project Scaffold
-description: Vite + React + TypeScript project setup with GSAP, ScrollTrigger, and modular SCSS
+description: Vite + React + TypeScript project setup with GSAP, ScrollSmoother, and modular SCSS
 targets:
   - ../package.json
   - ../vite.config.ts
@@ -22,9 +22,11 @@ The portfolio is a single-page application built with Vite + React + TypeScript.
 
 - **Bundler**: Vite 6+
 - **Framework**: React 19+ with TypeScript
-- **Animations**: GSAP 3+ with ScrollTrigger plugin
+- **Animations**: GSAP 3+ with ScrollTrigger + ScrollSmoother plugins
+- **GSAP React**: `@gsap/react` — use `useGSAP()` hook instead of `useEffect()`/`useLayoutEffect()` for all GSAP code
 - **Styling**: Modular SCSS (CSS Modules with `.module.scss` files)
 - **Content**: YAML config files fetched at runtime (`public/content/*.yaml`)
+- **Routing**: React Router (SPA with `/` portfolio and `/config` admin route)
 
 `[@test] ../src/App.test.tsx`
 
@@ -32,7 +34,15 @@ The portfolio is a single-page application built with Vite + React + TypeScript.
 
 - `index.html` loads `/src/main.tsx`
 - `main.tsx` renders `<App />` into `#root`
-- `App.tsx` composes the three main sections: Hero, About, Projects
+- `App.tsx` sets up React Router with two routes:
+  - `/` — portfolio page (Hero, Tagline, About, Projects, Footer) wrapped in ScrollSmoother
+  - `/config` — admin page (lazy-loaded)
+
+## ScrollSmoother
+
+- GSAP ScrollSmoother wraps the entire portfolio page
+- Provides smooth, momentum-based scrolling across all sections
+- See [scroll-smoother spec](scroll-smoother.spec.md)
 
 ## SCSS Architecture
 
@@ -45,10 +55,12 @@ The portfolio is a single-page application built with Vite + React + TypeScript.
 
 Required production dependencies:
 
-- `react`, `react-dom`
-- `gsap` (with ScrollTrigger)
+- `react`, `react-dom`, `react-router-dom`
+- `gsap` (with ScrollTrigger + ScrollSmoother)
+- `@gsap/react` (useGSAP hook)
 - `js-yaml` (runtime YAML parsing)
 - `canvas-particles-js` (particle animations)
+- `pretext` by chenglou (text measurement)
 
 Required dev dependencies:
 

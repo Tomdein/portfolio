@@ -1,13 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import type { Project } from '@/types/project';
+import type { ProjectItem } from '@/types/config';
 import styles from './ProjectCard.module.scss';
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface ProjectCardProps {
-    project: Project;
+    project: ProjectItem;
     index: number;
 }
 
@@ -17,46 +18,43 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 
     const isEven = index % 2 === 0;
 
-    useEffect(() => {
-        const card = cardRef.current;
-        const image = imageRef.current;
-        if (!card || !image) return;
+    useGSAP(
+        () => {
+            const card = cardRef.current;
+            const image = imageRef.current;
+            if (!card || !image) return;
 
-        // Card fade + slide in (starts at opacity 0, y 60 via CSS)
-        gsap.to(card, {
-            scrollTrigger: {
-                trigger: card,
-                start: 'top 70%',
-                end: 'bottom 40%',
-                toggleActions: 'play complete none reverse',
-                scrub: 0.5,
-                // markers: { indent: 200 * index },
-                fastScrollEnd: true,
-            },
-            keyframes: [
-                // { y: 60, opacity: 0, duration: 0.5, ease: 'none', at: 0 },
-                { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.1 },
-                { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.7 },
-                { y: -20, opacity: 0, duration: 0.5, ease: 'sine.out', at: 1 },
-            ],
-        });
+            // Card fade + slide in (starts at opacity 0, y 60 via CSS)
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 70%',
+                    end: 'bottom 40%',
+                    toggleActions: 'play complete none reverse',
+                    scrub: 0.5,
+                    fastScrollEnd: true,
+                },
+                keyframes: [
+                    { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.1 },
+                    { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.7 },
+                    { y: -20, opacity: 0, duration: 0.5, ease: 'sine.out', at: 1 },
+                ],
+            });
 
-        // Parallax on image
-        gsap.to(image.firstChild, {
-            scrollTrigger: {
-                trigger: card,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: true,
-            },
-            yPercent: 20,
-            ease: 'none',
-        });
-
-        return () => {
-            ScrollTrigger.getAll().forEach((st) => st.kill());
-        };
-    }, []);
+            // Parallax on image
+            gsap.to(image.firstChild, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true,
+                },
+                yPercent: 20,
+                ease: 'none',
+            });
+        },
+        { scope: cardRef },
+    );
 
     return (
         <div

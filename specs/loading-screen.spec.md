@@ -1,6 +1,6 @@
 ---
 name: Loading Screen
-description: Full-viewport loading overlay with name display and throbber
+description: Full-viewport loading overlay with name display and throbber, controlled by site.yaml flag
 targets:
   - ../src/components/LoadingScreen/LoadingScreen.tsx
   - ../src/components/LoadingScreen/LoadingScreen.module.scss
@@ -8,13 +8,18 @@ targets:
 
 # Loading Screen
 
-Full-viewport overlay displayed while YAML config files and images are being fetched.
+Full-viewport overlay displayed while YAML config files and images are being fetched. Controlled by `enableLoadingScreen` in `site.yaml`.
 
-## Behavior
+## Enable/Disable (`enableLoadingScreen` in `site.yaml`)
+
+- **`true` (default):** Full loading screen overlay is shown
+- **`false`:** Loading screen is hidden entirely. Hero name renders immediately with character stagger animation, scrolling is locked until all YAML + images finish loading. Once loaded, the infoLine animates in and scrolling unlocks. See [hero-section spec](hero-section.spec.md).
+
+## Behavior (when enabled)
 
 - Shown immediately on app mount, before any section content renders
-- Fetches all YAML files (`hero.yaml`, `about.yaml`, `projects.yaml`, `site.yaml`) in parallel
-- Also preloads project images referenced in `projects.yaml`
+- Fetches all YAML files (`hero.yaml`, `about.yaml`, `projects.yaml`, `tagline.yaml`, `contacts.yaml`, `footer.yaml`, `site.yaml`) in parallel
+- Also preloads images referenced in `projects.yaml` and `tagline.yaml`
 - Minimum display time of ~1 second so the animation is always visible, even on fast connections
 - After all assets are loaded AND the minimum time has elapsed, the loading screen transitions out
 
@@ -23,7 +28,7 @@ Full-viewport overlay displayed while YAML config files and images are being fet
 ## Display
 
 - Full viewport (`100vw × 100vh`), fixed position, highest z-index
-- Displays the name from `hero.yaml` (the `name` field), centered
+- Displays the name from `hero.yaml` (`title`, `firstName`, `lastName` fields), centered
 - A throbber/spinner below the name indicating loading progress
 - Dark background matching the site theme
 

@@ -1,0 +1,8 @@
+side: "right"
+items:
+  - label: "GitHub"
+    url: "https://github.com/deingruber"
+  - label: "LinkedIn"
+    url: "https://linkedin.com/in/tomas-deingruber"
+  - label: "Email"
+    url: "mailto:tomas@deingruber.at"

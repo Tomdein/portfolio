@@ -1,0 +1,35 @@
+@use '../../styles/variables' as *;
+
+.footer {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-2xl $container-padding;
+}
+
+.content {
+    @include container-narrow;
+    text-align: center;
+}
+
+.motto {
+    margin: 0;
+}
+
+.quote {
+    font-size: $font-size-lg;
+    font-style: italic;
+    color: $color-text-muted;
+    line-height: 1.6;
+    margin: 0 0 $space-sm;
+}
+
+.author {
+    display: block;
+    font-size: $font-size-sm;
+    font-style: normal;
+    color: $color-text-muted;
+    margin-top: $space-xs;
+    transform: translateY(0.3em);
+}

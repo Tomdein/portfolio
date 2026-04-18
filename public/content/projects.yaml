@@ -1,0 +1,11 @@
+projects:
+  - title: "Portfolio"
+    description: "This portfolio website built with React, TypeScript, and GSAP animations."
+    tags: ["React", "TypeScript", "GSAP", "SCSS"]
+    image: "/images/projects/portfolio.webp"
+    order: 1
+  - title: "Portfolio2"
+    description: "This portfolio website built with React, TypeScript, and GSAP animations."
+    tags: ["React", "TypeScript", "GSAP", "SCSS"]
+    image: "/images/projects/portfolio.webp"
+    order: 2

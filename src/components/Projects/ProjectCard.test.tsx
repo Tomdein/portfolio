@@ -1,16 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import ProjectCard from './ProjectCard';
-import type { Project } from '@/types/project';
+import type { ProjectItem } from '@/types/config';
 
-const mockProject: Project = {
+const mockProject: ProjectItem = {
     title: 'Test Project',
     description: 'A test project description',
     tags: ['React', 'TypeScript'],
     image: '/images/projects/test.webp',
     link: 'https://example.com',
     order: 1,
-    body: '',
 };
 
 describe('ProjectCard', () => {
