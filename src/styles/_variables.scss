@@ -10,6 +10,14 @@ $color-text: #f0f0f0;
 $color-text-muted: #888;
 $color-accent: #646cff;
 $color-accent-hover: color.adjust($color-accent, $lightness: 10%);
+$color-accent2: #7746C0;
+$color-accent2-hover: color.adjust($color-accent2, $lightness: 10%);
+$color-accent3: #FFED4D;
+$color-accent3-hover: color.adjust($color-accent3, $lightness: 10%);
+$color-accent4: #FFD04D;
+$color-accent4-hover: color.adjust($color-accent4, $lightness: 10%);
+$color-accent4-muted: color.adjust($color-accent4, $lightness: -30%);
+$color-accent4-muted-hover: color.adjust($color-accent4, $lightness: -20%);
 $color-surface: #141414;
 $color-border: #222;
 
@@ -47,6 +55,7 @@ $bp-mobile: 480px;
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
 $bp-wide: 1440px;
+$bp-wider: 1800px;
 
 // Transitions
 $transition-fast: 150ms ease;
