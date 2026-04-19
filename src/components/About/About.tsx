@@ -33,30 +33,28 @@ export default function About({ config }: AboutProps) {
             const wordInners = section.querySelectorAll(`.${styles.wordInner}`);
 
             // Entrance: words reveal on scroll
-            gsap.from(wordInners, {
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 70%',
-                    end: 'top -10%',
-                    scrub: true,
-                },
-                y: 20,
-                opacity: 0,
-                stagger: 0.02,
-            });
-
             // Exit: words fade up as section scrolls out
             gsap.to(wordInners, {
                 scrollTrigger: {
                     trigger: section,
-                    start: 'bottom 70%',
-                    end: 'bottom 10%',
+                    start: 'top 60%',
+                    end: 'bottom 40%',
+                    // markers: true,
                     scrub: true,
+                    toggleActions: 'play complete none reverse',
                 },
-                y: -20,
-                opacity: 0,
-                stagger: 0.01,
+                keyframes: {
+                    "0%": { y: 20, opacity: 0 },
+                    "15%": { y: 0, opacity: 1 },
+                    "85%": { y: 0, opacity: 1 },
+                    "100%": { y: 20, opacity: 0 },
+                    easeEach: 'sine.out',
+                },
+                stagger: 0.015,
+                ease: 'none', // ease the entire keyframe block
+                duration: 1, // total duration of the keyframe sequence (adjust as needed)
             });
+
         },
         { scope: sectionRef, dependencies: [config.text] },
     );

@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     padding: $space-2xl $container-padding;
-    min-height: 60vh;
+    min-height: 120vh;
 }
 
 .text {
@@ -31,4 +31,6 @@
 .wordInner {
     display: inline-block;
     will-change: transform, opacity;
+    y: 20;
+    opacity: 0;
 }

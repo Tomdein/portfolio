@@ -36,28 +36,20 @@ export default function Tagline({ config }: TaglineProps) {
                 ease: 'none',
             });
 
-            // Text animate in
-            gsap.from(text, {
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 80%',
-                    end: 'top 30%',
-                    scrub: true,
-                },
-                y: 40,
-                opacity: 0,
-            });
-
-            // Text animate out
             gsap.to(text, {
                 scrollTrigger: {
-                    trigger: section,
-                    start: 'bottom 60%',
+                    trigger: text,
+                    start: 'top 90%',
                     end: 'bottom 10%',
-                    scrub: true,
+                    toggleActions: 'play complete none reverse',
+                    scrub: 0.5,
+                    // markers: true,
+                    fastScrollEnd: true,
                 },
-                y: -40,
-                opacity: 0,
+                keyframes: [
+                    { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in' },
+                    { y: -40, opacity: 0, duration: 0.5, ease: 'sine.out' },
+                ],
             });
         },
         { scope: sectionRef },

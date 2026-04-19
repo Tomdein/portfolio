@@ -2,7 +2,7 @@
 
 .tagline {
     position: relative;
-    height: 80vh;
+    height: 120vh;
     min-height: 400px;
     overflow: hidden;
     display: flex;
@@ -26,6 +26,8 @@
 
 .text {
     position: relative;
+    y: 40;
+    opacity: 0;
     z-index: 1;
     font-size: clamp(1.5rem, 4vw, 3rem);
     font-weight: 700;

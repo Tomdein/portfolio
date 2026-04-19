@@ -36,9 +36,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                     fastScrollEnd: true,
                 },
                 keyframes: [
-                    { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.1 },
-                    { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in', at: 0.7 },
-                    { y: -20, opacity: 0, duration: 0.5, ease: 'sine.out', at: 1 },
+                    { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in' },
+                    { y: 0, opacity: 1, duration: 0.5, ease: 'sine.in' },
+                    { y: -20, opacity: 0, duration: 0.5, ease: 'sine.out' },
                 ],
             });
 
