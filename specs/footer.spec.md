@@ -27,7 +27,7 @@ author: "Steve Jobs"
 
 - If `motto` and `author` are provided: displays a quoted motto with the author name slightly offset vertically beside it
 - If `motto` is omitted or empty: renders as an empty spacer (no visible content)
-- Sufficient height to ensure the last project card finishes its exit animation in the top 1/3 of the viewport
+- `min-height: 100vh` to ensure the last project card finishes its exit animation in the top 1/3 of the viewport
 
 `[@test] ../src/components/Footer/Footer.test.tsx`
 

@@ -29,17 +29,17 @@ Uses `useGSAP()` hook (not `useEffect`).
 - After injection, `wrapTextWords()` walks all text nodes in the container and wraps each word in `<span class=word><span class=wordInner>word</span></span>`
 - `useLayoutEffect` is declared **before** `useGSAP` so word spans exist when GSAP queries them (both run as layout effects in declaration order)
 
-### Entrance
+### Entrance & Exit (single combined animation)
 
-- Text reveals on scroll using ScrollTrigger
-- Words animate in sequentially (staggered fade + slight upward translate via `gsap.from()` on inner word spans)
-- ScrollTrigger range: `start: "top 70%"`, `end: "top -10%"` — gives a longer scroll distance for the reveal to complete
-- scrub: smooth tie to scroll position for fluid feel
-
-### Exit
-
-- As the user scrolls past the about section, words animate out: fade out + translate up
-- Mirrors the entrance animation in reverse direction (translate upward instead of downward)
+- Initial hidden state is set via CSS on `.wordInner` (`opacity: 0; y: 20`) — not via `gsap.from()`
+- A single `gsap.to()` with **keyframes** drives both entrance and exit in one ScrollTrigger pass:
+  - `0%` → `{y: 20, opacity: 0}` (hidden, starting state)
+  - `15%` → `{y: 0, opacity: 1}` (fully visible)
+  - `85%` → `{y: 0, opacity: 1}` (holds visible)
+  - `100%` → `{y: 20, opacity: 0}` (fades out upward)
+  - `easeEach: 'sine.out'` per keyframe step; `ease: 'none'` on the outer block
+- ScrollTrigger: `trigger: section`, `start: 'top 60%'`, `end: 'bottom 40%'`, `scrub: true`, `toggleActions: 'play complete none reverse'`
+- `stagger: 0.015` across all word spans
 
 `[@test] ../src/components/About/About.animation.test.tsx`
 
@@ -47,4 +47,5 @@ Uses `useGSAP()` hook (not `useEffect`).
 
 - Centered text, max-width container (~700–800px)
 - Larger-than-body font size for emphasis
+- Section `min-height: 120vh` to give scroll room for the combined entrance/exit keyframe sequence
 - Bigger vertical spacing after the about section (before projects)

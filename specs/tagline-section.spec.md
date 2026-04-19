@@ -43,14 +43,17 @@ Uses `useGSAP()` hook (not `useEffect`).
 
 ### Tagline Text
 
-- Text animates in (fade + translate) as the section enters the viewport
-- Text animates out (fade + translate) as the section exits the viewport
-- Scroll-linked via ScrollTrigger with scrub
+- Initial hidden state set via CSS on `.text` (`opacity: 0; y: 40`) — not via `gsap.from()`
+- A single `gsap.to()` with **keyframes** drives both entrance and exit:
+  - Step 1: `{y: 0, opacity: 1, duration: 0.5, ease: 'sine.in'}` — slides in and fades up
+  - Step 2: `{y: -40, opacity: 0, duration: 0.5, ease: 'sine.out'}` — slides out upward and fades
+- ScrollTrigger: `trigger: text` (the text element itself), `start: 'top 90%'`, `end: 'bottom 10%'`, `scrub: 0.5`, `toggleActions: 'play complete none reverse'`, `fastScrollEnd: true`
 
 `[@test] ../src/components/Tagline/Tagline.animation.test.tsx`
 
 ## Styling
 
+- Section height: `120vh` (provides scroll room for the keyframe sequence), `min-height: 400px`
 - Background image: `object-fit: cover`, B&W, full bleed
 - Text: large, bold, white with text-shadow or semi-transparent dark overlay for legibility
 - Responsive: text scales appropriately on mobile

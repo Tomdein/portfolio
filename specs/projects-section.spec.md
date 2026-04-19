@@ -50,10 +50,10 @@ Each card displays:
 ### Card Entrance & Exit
 
 - Each project card starts hidden via CSS (`opacity: 0; transform: translateY(60px)`)
-- Uses `gsap.to()` with **keyframes** and `scrub: 0.5` for scroll-linked animation:
-  - Enters: translates to `y: 0, opacity: 1` (ease: `sine.in`)
-  - Holds visible through mid-scroll
-  - Exits: translates to `y: -20, opacity: 0` (ease: `sine.out`)
+- Uses `gsap.to()` with **sequential keyframes** (no `at` offsets) and `scrub: 0.5`:
+  - Step 1: `{y: 0, opacity: 1, duration: 0.5, ease: 'sine.in'}` — enters visible
+  - Step 2: `{y: 0, opacity: 1, duration: 0.5, ease: 'sine.in'}` — holds visible
+  - Step 3: `{y: -20, opacity: 0, duration: 0.5, ease: 'sine.out'}` — exits upward
 - ScrollTrigger range: `start: "top 70%"`, `end: "bottom 40%"`, `toggleActions: "play complete none reverse"`, `fastScrollEnd: true`
 
 **Important:** Card entrance animations must use CSS for the initial hidden state and `gsap.to()` to animate to the visible state. Do **not** use `gsap.from()` — it causes elements to flash or fail to animate when ScrollTrigger's inline styles conflict with CSS.

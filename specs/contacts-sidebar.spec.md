@@ -28,11 +28,17 @@ items:
 
 ## Layout
 
-- Fixed position, vertically centered on the side specified by `side` field ("left" or "right")
-- Vertical list of items, stacked top to bottom
-- Always visible regardless of scroll position
+- **Mobile** (below `$bp-wider`): fixed bar at `top: 0`, full viewport width, items in a horizontal centered row with `flex-wrap: wrap`
+- **Desktop** (`$bp-wider`+): fixed, vertically centered (`top: 50%; transform: translateY(-50%)`), stacked column on the side specified by `side` ("left" or "right"); decorative horizontal separator lines (`3rem wide × 1px tall`) above and below the list via `::before`/`::after`
 
 `[@test] ../src/components/ContactsSidebar/ContactsSidebar.test.tsx`
+
+## GSAP Scroll Animation
+
+Uses `useGSAP()` hook (not `useEffect`).
+
+- Sidebar fades out as it scrolls past the top of the viewport
+- `gsap.to(sidebar, { opacity: 0 })` with ScrollTrigger: `start: 'top 0%'`, `end: 'bottom 0%'`, `scrub: true`
 
 ## Behavior
 
@@ -42,6 +48,6 @@ items:
 
 ## Styling
 
-- Small, unobtrusive text (rotated vertically or horizontal — consistent with design)
+- Link and plain-text color: `$color-accent4-muted`; link hover: `$color-accent4-muted-hover`
 - Subtle hover effect on links
-- Does not overlap main content on narrow viewports (consider hiding or repositioning on mobile)
+- Horizontal separator lines shown only on desktop
