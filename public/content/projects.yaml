@@ -32,12 +32,12 @@ projects:
   - title: "Homelab"
     description: "First a it was just a docker-compose running on Raspberry Pi, but it quickly evolved into a mini PC running Kubernetes cluster & Helm on Headless Alpine Linux installed via Ansible."
     tags: ["Homelab", "Kubernetes", "Raspberry Pi", "Docker", "Linux"]
-    image: "/images/projects/homelab.webp"
+    image: "/images/projects/homelab.png"
     order: 10
   - title: "Home automation"
     description: "A home automation using Home Assistant with custom integrations - one scraping IDOS system and a upgrade of Tuya 3.3 protocol to version 3.4 along with wireshark dissector for it in Lua."
     tags: ["Home automation", "MQTT", "Python", "Lua", "Reverse engineering"]
-    image: "/images/projects/home-automation.webp"
+    image: "/images/projects/home-automation3.png"
     order: 20
   - title: "AnetA8 3D printer"
     description: "More like ANotA8: Originaly a cheap 3D printer kit. After heavy modifications the only original parts are the stepper motors and linear guides on 2 axes. I modified AnetA8 with custom firmware, hardware upgrades and a custom enclosure to make it more reliable and enjoyable to use."
@@ -53,6 +53,11 @@ projects:
     description: "A custom LED ring controlled by an ESP32. Created the PCB design and KiCAD scripts to generate the board layout. As you can see, I am missing an enclosure for it as I wanted to fit in into impossible space, but otherwise it's fully functional."
     tags: ["ESP32", "PCB Design", "KiCAD scripting"]
     image: "/images/projects/led-ring.jpg"
+    order: 32
+  - title: "CFRP DML speakers"
+    description: "A custom set of CFRP DML speakers, using the Dayton exciters to drive the sound."
+    tags: ["CFRP", "DML"]
+    image: "/images/projects/dml.jpg"
     order: 32
   - title: "WoT clan calendar/event system"
     description: "A calendar, event system and discord bot for World of Tanks clan created using microservices."
