@@ -72,19 +72,51 @@ export default defineConfig([
 ])
 ```
 
-# To run in dev:
-## Create .htpasswd file:
-run openssl passwd -apr1 and paste the output into file like this:
-<set your user name>:<output from openssl passwd -apr1>
+# Local Development
 
-## Run vite + nginx:
-```
-npm run nginx   # terminal 1 — nginx on :5174
-npm run dev     # terminal 2 — Vite on :5173, proxies /images & /content to :5174
+## Prerequisites
+
+- Node.js 22+
+- Docker (or Docker Desktop on Windows/macOS)
+
+## 1. Create `.htpasswd`
+
+The admin page authenticates via HTTP Basic Auth. Generate a password hash and create the file at the project root:
+
+```sh
+openssl passwd -apr1
+# copy the output, then create the file:
+echo 'yourusername:<paste output here>' > .htpasswd
 ```
 
-Or if running in WSL (I can't use docker in WSL):
+> The `.htpasswd` file is gitignored and must never be committed.
+
+## 2. Start nginx (provides `/images` and `/content` with DAV + auth)
+
+**Linux / macOS / Docker in WSL:**
+```sh
+npm run nginx   # runs nginx:alpine via docker on port 5174
 ```
-in windows: docker compose up -d
-npm run dev
+
+**WSL without Docker access (run from Windows host):**
+```sh
+docker compose up -d
 ```
+
+## 3. Start Vite
+
+```sh
+npm run dev     # http://localhost:5173
+```
+
+Vite proxies `/images` and `/content` to `http://localhost:5174` (nginx), so the admin page at `/config` works identically to production.
+
+## Other Scripts
+
+| Command | Description |
+|---|---|
+| `npm run build` | Production build (TypeScript + Vite) |
+| `npm run test` | Run tests once |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run lint` | ESLint |
+| `npm run preview` | Preview production build locally |
