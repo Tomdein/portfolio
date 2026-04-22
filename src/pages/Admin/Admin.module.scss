@@ -87,6 +87,34 @@
     padding: $space-md $container-padding;
 }
 
+.tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid $color-border;
+    margin-bottom: $space-md;
+}
+
+.tab {
+    padding: 0.5rem 1.25rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    transition: color $transition-fast, border-color $transition-fast;
+    margin-bottom: -1px;
+
+    &:hover {
+        color: $color-text;
+    }
+}
+
+.tabActive {
+    color: $color-text;
+    border-bottom-color: $color-accent;
+}
+
 .grid {
     display: grid;
     gap: $space-md;

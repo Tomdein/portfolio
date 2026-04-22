@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import YamlEditor from './YamlEditor';
+import ImageManager from './ImageManager';
 import styles from './Admin.module.scss';
 
 const YAML_FILES = [
@@ -22,6 +23,7 @@ export default function Admin() {
     const [showCredentialsForm, setShowCredentialsForm] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [activeTab, setActiveTab] = useState<'yaml' | 'images'>('yaml');
 
     const handleCredentialsSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -101,16 +103,40 @@ export default function Admin() {
             )}
 
             <main className={styles.main}>
-                <div className={styles.grid}>
-                    {YAML_FILES.map((filename) => (
-                        <YamlEditor
-                            key={filename}
-                            filename={filename}
-                            credentials={credentials}
-                            onCredentialsNeeded={() => setShowCredentialsForm(true)}
-                        />
-                    ))}
-                </div>
+                <nav className={styles.tabs}>
+                    <button
+                        className={`${styles.tab} ${activeTab === 'yaml' ? styles.tabActive : ''}`}
+                        onClick={() => setActiveTab('yaml')}
+                    >
+                        YAML Editor
+                    </button>
+                    <button
+                        className={`${styles.tab} ${activeTab === 'images' ? styles.tabActive : ''}`}
+                        onClick={() => setActiveTab('images')}
+                    >
+                        Image Manager
+                    </button>
+                </nav>
+
+                {activeTab === 'yaml' && (
+                    <div className={styles.grid}>
+                        {YAML_FILES.map((filename) => (
+                            <YamlEditor
+                                key={filename}
+                                filename={filename}
+                                credentials={credentials}
+                                onCredentialsNeeded={() => setShowCredentialsForm(true)}
+                            />
+                        ))}
+                    </div>
+                )}
+
+                {activeTab === 'images' && (
+                    <ImageManager
+                        credentials={credentials}
+                        onCredentialsNeeded={() => setShowCredentialsForm(true)}
+                    />
+                )}
             </main>
         </div>
     );
