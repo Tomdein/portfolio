@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './YamlEditor.module.scss';
 
 interface YamlEditorProps {
@@ -29,6 +29,11 @@ export default function YamlEditor({ filename, credentials, onCredentialsNeeded 
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        load();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const save = async () => {
         if (!credentials) {
@@ -66,11 +71,10 @@ export default function YamlEditor({ filename, credentials, onCredentialsNeeded 
             <div className={styles.header}>
                 <h3 className={styles.filename}>{filename}</h3>
                 <div className={styles.actions}>
-                    {!loaded ? (
-                        <button className={styles.btn} onClick={load} disabled={loading}>
-                            {loading ? 'Loading…' : 'Load'}
-                        </button>
-                    ) : (
+                    <button className={styles.btn} onClick={load} disabled={loading}>
+                        {loading ? 'Loading…' : 'Reload'}
+                    </button>
+                    {loaded && (
                         <button className={styles.btnPrimary} onClick={save} disabled={saving}>
                             {saving ? 'Saving…' : 'Save'}
                         </button>

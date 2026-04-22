@@ -7,6 +7,16 @@
     font-family: $font-family-base;
 }
 
+.loginPage {
+    min-height: 100vh;
+    background: $color-bg;
+    color: $color-text;
+    font-family: $font-family-base;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .header {
     display: flex;
     align-items: center;
