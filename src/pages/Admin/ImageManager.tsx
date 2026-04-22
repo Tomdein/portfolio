@@ -2,18 +2,26 @@ import { useState, useEffect, useRef } from 'react';
 import styles from './ImageManager.module.scss';
 
 const ACCEPTED_TYPES = '.jpg,.jpeg,.png,.webp,.gif,.svg,.avif';
+const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'avif']);
 
 interface ImageManagerProps {
     credentials: { username: string; password: string } | null;
     onCredentialsNeeded: () => void;
 }
 
-interface ImageFile {
+interface Entry {
     name: string;
+    type: 'file' | 'directory';
+}
+
+function isImage(name: string): boolean {
+    const ext = name.split('.').pop()?.toLowerCase() ?? '';
+    return IMAGE_EXTENSIONS.has(ext);
 }
 
 export default function ImageManager({ credentials, onCredentialsNeeded }: ImageManagerProps) {
-    const [images, setImages] = useState<ImageFile[]>([]);
+    const [pathSegments, setPathSegments] = useState<string[]>([]);
+    const [entries, setEntries] = useState<Entry[]>([]);
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -22,23 +30,33 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
     const [deletingFile, setDeletingFile] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        loadImages();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const currentApiPath = '/images/' + (pathSegments.length ? pathSegments.join('/') + '/' : '');
 
-    const loadImages = async () => {
+    useEffect(() => {
+        loadEntries();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathSegments]);
+
+    const loadEntries = async () => {
         setLoading(true);
         setStatus(null);
         try {
-            const res = await fetch('/images/');
+            const res = await fetch(currentApiPath);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data: Array<{ name: string; type: string }> = await res.json();
-            setImages(data.filter((f) => f.type === 'file'));
+            setEntries(
+                data
+                    .filter((f) => f.type === 'file' || f.type === 'directory')
+                    .map((f) => ({ name: f.name, type: f.type as 'file' | 'directory' }))
+                    .sort((a, b) => {
+                        if (a.type !== b.type) return a.type === 'directory' ? -1 : 1;
+                        return a.name.localeCompare(b.name);
+                    }),
+            );
         } catch (err) {
             setStatus({
                 type: 'error',
-                message: `Failed to load images: ${err instanceof Error ? err.message : String(err)}`,
+                message: `Failed to load: ${err instanceof Error ? err.message : String(err)}`,
             });
         } finally {
             setLoading(false);
@@ -58,6 +76,24 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
         return true;
     };
 
+    const navigateTo = (dir: string) => {
+        setEntries([]);
+        setStatus(null);
+        setPathSegments((prev) => [...prev, dir]);
+    };
+
+    const navigateUp = () => {
+        setEntries([]);
+        setStatus(null);
+        setPathSegments((prev) => prev.slice(0, -1));
+    };
+
+    const navigateToBreadcrumb = (index: number) => {
+        setEntries([]);
+        setStatus(null);
+        setPathSegments((prev) => prev.slice(0, index + 1));
+    };
+
     const handleUpload = async (files: FileList) => {
         if (!requireAuth()) return;
         setUploading(true);
@@ -68,7 +104,7 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
 
         for (const file of Array.from(files)) {
             try {
-                const res = await fetch(`/images/${file.name}`, {
+                const res = await fetch(`${currentApiPath}${file.name}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': file.type || 'application/octet-stream',
@@ -88,7 +124,7 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
             }
         }
 
-        await loadImages();
+        await loadEntries();
         setUploading(false);
         if (errors.length) {
             setStatus({ type: 'error', message: `Upload failed for: ${errors.join(', ')}` });
@@ -102,7 +138,7 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
         setDeletingFile(name);
         setStatus(null);
         try {
-            const res = await fetch(`/images/${name}`, {
+            const res = await fetch(`${currentApiPath}${name}`, {
                 method: 'DELETE',
                 headers: { Authorization: getAuthHeader()! },
             });
@@ -111,7 +147,7 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
                 return;
             }
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            setImages((prev) => prev.filter((img) => img.name !== name));
+            setEntries((prev) => prev.filter((e) => e.name !== name));
             setStatus({ type: 'success', message: `Deleted ${name}.` });
         } catch (err) {
             setStatus({
@@ -142,8 +178,8 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
         }
         setStatus(null);
         try {
-            const destination = `${window.location.origin}/images/${newName}`;
-            const res = await fetch(`/images/${oldName}`, {
+            const destination = `${window.location.origin}${currentApiPath}${newName}`;
+            const res = await fetch(`${currentApiPath}${oldName}`, {
                 method: 'MOVE',
                 headers: {
                     Authorization: getAuthHeader()!,
@@ -155,8 +191,8 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
                 return;
             }
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            setImages((prev) =>
-                prev.map((img) => (img.name === oldName ? { name: newName } : img)),
+            setEntries((prev) =>
+                prev.map((e) => (e.name === oldName ? { ...e, name: newName } : e)),
             );
             setStatus({ type: 'success', message: `Renamed ${oldName} → ${newName}.` });
         } catch (err) {
@@ -174,8 +210,35 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
         if (e.dataTransfer.files.length) handleUpload(e.dataTransfer.files);
     };
 
+    const dirs = entries.filter((e) => e.type === 'directory');
+    const files = entries.filter((e) => e.type === 'file');
+
     return (
         <div className={styles.manager}>
+            {/* Breadcrumb */}
+            <nav className={styles.breadcrumb}>
+                <button
+                    className={styles.breadcrumbSegment}
+                    onClick={() => setPathSegments([])}
+                    disabled={pathSegments.length === 0}
+                >
+                    images
+                </button>
+                {pathSegments.map((seg, i) => (
+                    <span key={i} className={styles.breadcrumbItem}>
+                        <span className={styles.breadcrumbSep}>/</span>
+                        <button
+                            className={styles.breadcrumbSegment}
+                            onClick={() => navigateToBreadcrumb(i)}
+                            disabled={i === pathSegments.length - 1}
+                        >
+                            {seg}
+                        </button>
+                    </span>
+                ))}
+            </nav>
+
+            {/* Drop zone */}
             <div
                 className={styles.dropzone}
                 onDrop={handleDrop}
@@ -202,48 +265,80 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
             </div>
 
             {status && (
-                <p
-                    className={`${styles.status} ${status.type === 'error' ? styles.error : styles.success}`}
-                >
+                <p className={`${styles.status} ${status.type === 'error' ? styles.error : styles.success}`}>
                     {status.message}
                 </p>
             )}
 
             <div className={styles.toolbar}>
-                <button className={styles.btn} onClick={loadImages} disabled={loading}>
+                {pathSegments.length > 0 && (
+                    <button className={styles.btn} onClick={navigateUp}>
+                        ← Up
+                    </button>
+                )}
+                <button className={styles.btn} onClick={loadEntries} disabled={loading}>
                     {loading ? 'Loading…' : 'Refresh'}
                 </button>
                 <span className={styles.count}>
-                    {images.length} image{images.length !== 1 ? 's' : ''}
+                    {dirs.length > 0 && `${dirs.length} folder${dirs.length !== 1 ? 's' : ''}`}
+                    {dirs.length > 0 && files.length > 0 && ', '}
+                    {files.length > 0 && `${files.length} file${files.length !== 1 ? 's' : ''}`}
+                    {entries.length === 0 && !loading && 'Empty'}
                 </span>
             </div>
 
-            {images.length === 0 && !loading && (
-                <p className={styles.empty}>No images found.</p>
+            {entries.length === 0 && !loading && (
+                <p className={styles.empty}>No files or folders here.</p>
             )}
 
+            {/* Directories */}
+            {dirs.length > 0 && (
+                <div className={styles.dirGrid}>
+                    {dirs.map((dir) => (
+                        <button
+                            key={dir.name}
+                            className={styles.dirCell}
+                            onClick={() => navigateTo(dir.name)}
+                            title={`Open ${dir.name}/`}
+                        >
+                            <span className={styles.dirIcon}>📁</span>
+                            <span className={styles.dirName}>{dir.name}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* Files */}
             <div className={styles.grid}>
-                {images.map((img) => (
-                    <div key={img.name} className={styles.cell}>
+                {files.map((file) => (
+                    <div key={file.name} className={styles.cell}>
                         <div className={styles.thumb}>
-                            <img src={`/images/${img.name}`} alt={img.name} loading="lazy" />
+                            {isImage(file.name) ? (
+                                <img
+                                    src={`${currentApiPath}${file.name}`}
+                                    alt={file.name}
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <span className={styles.fileIcon}>📄</span>
+                            )}
                         </div>
 
-                        {renamingFile === img.name ? (
+                        {renamingFile === file.name ? (
                             <div className={styles.renameRow}>
                                 <input
                                     className={styles.renameInput}
                                     value={renameValue}
                                     onChange={(e) => setRenameValue(e.target.value)}
                                     onKeyDown={(e) => {
-                                        if (e.key === 'Enter') handleRename(img.name);
+                                        if (e.key === 'Enter') handleRename(file.name);
                                         if (e.key === 'Escape') cancelRename();
                                     }}
                                     autoFocus
                                 />
                                 <button
                                     className={styles.btnSmall}
-                                    onClick={() => handleRename(img.name)}
+                                    onClick={() => handleRename(file.name)}
                                     title="Confirm rename"
                                 >
                                     ✓
@@ -251,20 +346,20 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
                                 <button
                                     className={styles.btnSmall}
                                     onClick={cancelRename}
-                                    title="Cancel rename"
+                                    title="Cancel"
                                 >
                                     ✕
                                 </button>
                             </div>
                         ) : (
                             <div className={styles.infoRow}>
-                                <span className={styles.filename} title={img.name}>
-                                    {img.name}
+                                <span className={styles.filename} title={file.name}>
+                                    {file.name}
                                 </span>
                                 <div className={styles.actions}>
                                     <button
                                         className={styles.btnSmall}
-                                        onClick={() => startRename(img.name)}
+                                        onClick={() => startRename(file.name)}
                                         title="Rename"
                                     >
                                         ✎
@@ -272,10 +367,10 @@ export default function ImageManager({ credentials, onCredentialsNeeded }: Image
                                     <button
                                         className={`${styles.btnSmall} ${styles.btnDanger}`}
                                         onClick={() => {
-                                            if (window.confirm(`Delete ${img.name}?`))
-                                                handleDelete(img.name);
+                                            if (window.confirm(`Delete ${file.name}?`))
+                                                handleDelete(file.name);
                                         }}
-                                        disabled={deletingFile === img.name}
+                                        disabled={deletingFile === file.name}
                                         title="Delete"
                                     >
                                         ✕
