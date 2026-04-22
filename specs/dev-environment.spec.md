@@ -70,5 +70,5 @@ The same `nginx.conf` is used for both dev (via Docker volume) and production (c
 - `autoindex on` + `autoindex_format json` on `/images/` — enables the image manager directory listing
 - `dav_methods PUT DELETE MOVE` on `/images/` — enables upload, delete, rename
 - `dav_methods PUT` on `/content/` — enables YAML saves
-- `auth_basic` on all write operations uses `.htpasswd`
+- Auth directives are inside `limit_except GET` / `limit_except GET HEAD` blocks — GET requests are always public, no credentials needed to read content or list images
 - `client_max_body_size 20M` on `/images/` — limits upload size

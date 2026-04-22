@@ -47,34 +47,41 @@ A password-protected page at `/config` for editing all YAML configuration files.
 
 ## Image Manager
 
-A dedicated tab/section on the `/config` page for managing images served from `/images/`.
+A dedicated tab on the `/config` page for browsing and managing files under `/images/`, including subdirectories.
 
-### Display
+### Folder Browser
 
-- Grid of thumbnails; each cell shows the image, filename, and action buttons (rename, delete)
-- Images fetched by listing files under `/images/` (see Nginx config below)
-- Accepted file types for upload: `jpg`, `jpeg`, `png`, `webp`, `gif`, `svg`, `avif`
+- Starts at the root of `/images/`
+- Lists both **directories** (folder grid) and **files** (thumbnail grid) at the current path
+- Directories are displayed above files, sorted alphabetically within each group
+- Clicking a directory navigates into it (loads that path's contents)
+- **Breadcrumb bar** at the top shows the current path (`images / subfolder / ...`); each segment is a clickable link to navigate back to that level
+- **← Up** button in the toolbar navigates to the parent directory (hidden at root)
+- Listing fetches `GET /images/<current-path>/` which returns a JSON array via nginx `autoindex_format json`
+- Entries with `type: "directory"` are shown as folder tiles; entries with `type: "file"` are shown as thumbnail cells
+- Non-image files (non-matching extension) show a generic file icon instead of a thumbnail
+- Accepted image extensions for thumbnail display: `jpg`, `jpeg`, `png`, `webp`, `gif`, `svg`, `avif`
 
 `[@test] ../src/pages/Admin/ImageManager.test.tsx`
 
 ### Upload
 
-- File picker (accept attribute restricts to accepted types) or drag-and-drop
-- On select: PUT to `/images/<filename>` with Basic Auth credentials
-- Shows upload progress and success/error feedback per file
-- Grid updates after successful upload
+- Drop zone (click or drag & drop) uploads into the **current directory**
+- File picker restricts accepted types to: `jpg`, `jpeg`, `png`, `webp`, `gif`, `svg`, `avif`
+- On select: PUT to `/images/<current-path>/<filename>` with Basic Auth credentials
+- Shows upload feedback per file; grid refreshes after upload
 
 ### Delete
 
-- Delete button per thumbnail cell
-- Sends HTTP `DELETE` to `/images/<filename>` with Basic Auth credentials
-- Prompts for confirmation before sending the request
-- Removes the cell from the grid on success; shows error feedback on failure
+- Delete button per file cell
+- Sends HTTP `DELETE` to `/images/<current-path>/<filename>` with Basic Auth credentials
+- Prompts for confirmation before sending
+- Removes the cell on success; shows error feedback on failure
 
 ### Rename / Move
 
-- Rename action per thumbnail cell (inline edit of filename)
-- Sends HTTP `MOVE` to `/images/<oldname>` with `Destination: /images/<newname>` header and Basic Auth credentials
+- Inline rename per file cell
+- Sends HTTP `MOVE` to `/images/<current-path>/<oldname>` with `Destination: <origin>/images/<current-path>/<newname>` header and Basic Auth credentials
 - Updates the grid cell on success; shows error feedback on failure
 
 ### Authentication
@@ -85,48 +92,48 @@ A dedicated tab/section on the `/config` page for managing images served from `/
 ## Nginx Configuration
 
 ```nginx
-# YAML content files — public GET, auth-protected PUT
+# YAML content files — public GET, auth-protected everything else
 location /content/ {
     root /usr/share/nginx/html;
 
-    # GET — public, no auth
-    limit_except PUT {
-        allow all;
+    limit_except GET {
+        auth_basic "Admin";
+        auth_basic_user_file /etc/nginx/.htpasswd;
     }
 
-    # PUT — requires Basic Auth + DAV
     dav_methods PUT;
-    auth_basic "Admin";
-    auth_basic_user_file /etc/nginx/.htpasswd;
+    dav_access user:rw group:rw all:rw;
 
     client_body_temp_path /tmp/nginx;
     create_full_put_path on;
 }
 
-# Images — public GET, auth-protected PUT / DELETE / MOVE
+# Images — public GET/HEAD, auth-protected everything else
 location /images/ {
+    client_max_body_size 20M;
     root /usr/share/nginx/html;
 
-    # GET — public, no auth (used for thumbnails and site display)
-    limit_except PUT DELETE MOVE {
-        allow all;
+    # Directory listing for image manager (returns JSON array)
+    autoindex on;
+    autoindex_format json;
+
+    limit_except GET HEAD {
+        auth_basic "Admin";
+        auth_basic_user_file /etc/nginx/.htpasswd;
     }
 
-    # Write operations — require Basic Auth + DAV
     dav_methods PUT DELETE MOVE;
-    dav_ext_methods PROPFIND OPTIONS;  # enables directory listing for image grid
-    auth_basic "Admin";
-    auth_basic_user_file /etc/nginx/.htpasswd;
-
     client_body_temp_path /tmp/nginx;
     create_full_put_path on;
 }
 ```
 
 - `.htpasswd` file mounted into the container (via Kubernetes secret or Docker volume)
+- Auth directives are inside `limit_except` blocks — GET (and HEAD for `/images/`) are unconditionally public
 - `/content/` allows PUT only (no DELETE/MOVE) — YAML files are never deleted via the UI
 - `/images/` allows PUT, DELETE, and MOVE — required for upload, delete, and rename operations
-- PROPFIND/OPTIONS enabled on `/images/` so the image manager can list existing files
+- Directory listing on `/images/` uses nginx `autoindex_format json` — no PROPFIND/WebDAV extension needed
+- `client_max_body_size 20M` limits image upload size
 - MKCOL (directory creation) is intentionally **not** enabled on either path
 
 ## Security
