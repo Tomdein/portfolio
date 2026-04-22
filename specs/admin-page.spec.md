@@ -22,18 +22,25 @@ A password-protected page at `/config` for editing all YAML configuration files.
 
 ## Authentication
 
-- Nginx `ngx_http_dav_module` handles PUT requests to `/content/` paths
-- PUT requests are protected by HTTP Basic Auth via `.htpasswd` file
-- GET requests to `/content/` remain public (no auth required for reading YAML)
-- The admin page prompts for credentials before attempting any write operation
+- Nginx `ngx_http_dav_module` handles write requests to `/content/` and `/images/` paths
+- PUT/DELETE/MOVE requests are protected by HTTP Basic Auth via `.htpasswd` file
+- GET requests to `/content/` and `/images/` remain public (no auth required for reading)
+- On navigating to `/config`, a login form is shown **immediately** — the admin UI is never visible without valid credentials
+- Credentials are verified by sending a `DELETE /images/__auth_check__` request with Basic Auth before granting access:
+  - Any response other than `401` → credentials accepted, admin UI rendered
+  - `401` response → credentials rejected, page renders nothing (empty)
+- After successful login, credentials are held in React state and reused for all write operations
+- On sign-out, credentials are cleared and the login form is shown again
+- If a write operation returns `401` mid-session, the user is returned to the login form
 
 ## Editor Interface
 
-- Two tabs (or sections) on the `/config` page: **YAML Editor** and **Image Manager**
+- Two tabs on the `/config` page: **YAML Editor** and **Image Manager**
 - Lists all YAML config files: `hero.yaml`, `about.yaml`, `projects.yaml`, `tagline.yaml`, `contacts.yaml`, `footer.yaml`, `site.yaml`
-- Each file has a raw YAML text editor (textarea or code editor)
-- On load: fetches the current YAML content via GET
-- On save: PUTs the edited content back to Nginx with Basic Auth credentials
+- Each file has a raw YAML text editor (textarea)
+- On mount: automatically fetches the current YAML content via GET (no manual load step)
+- A **Reload** button allows re-fetching the current file content at any time
+- On save: PUTs the edited content back to Nginx with the stored Basic Auth credentials
 - Shows success/error feedback after save attempts
 
 `[@test] ../src/pages/Admin/YamlEditor.test.tsx`
