@@ -71,3 +71,20 @@ export default defineConfig([
   },
 ])
 ```
+
+# To run in dev:
+## Create .htpasswd file:
+run openssl passwd -apr1 and paste the output into file like this:
+<set your user name>:<output from openssl passwd -apr1>
+
+## Run vite + nginx:
+```
+npm run nginx   # terminal 1 — nginx on :5174
+npm run dev     # terminal 2 — Vite on :5173, proxies /images & /content to :5174
+```
+
+Or if running in WSL (I can't use docker in WSL):
+```
+in windows: docker compose up -d
+npm run dev
+```

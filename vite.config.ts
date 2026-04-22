@@ -8,6 +8,10 @@ export default defineConfig({
     port: 5173,
     host: true,
     allowedHosts: ['tomdein.deini.eu'],
+    proxy: {
+      '/images': 'http://localhost:5174',
+      '/content': 'http://localhost:5174',
+    },
   },
   plugins: [react()],
   resolve: {

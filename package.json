@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "nginx": "bash -c 'docker run --rm -p 5174:80 -v \"$(pwd)/public/images:/usr/share/nginx/html/images\" -v \"$(pwd)/public/content:/usr/share/nginx/html/content\" -v \"$(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf:ro\" -v \"$(pwd)/.htpasswd:/etc/nginx/.htpasswd:ro\" nginx:alpine'",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
