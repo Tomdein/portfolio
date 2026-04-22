@@ -1,46 +1,80 @@
 ---
 name: Kubernetes Deployment
-description: K8s manifests for deploying the portfolio container
+description: Helm chart for deploying the portfolio Nginx container
 targets:
-  - ../k8s/deployment.yaml
-  - ../k8s/service.yaml
-  - ../k8s/ingress.yaml
+  - ../helm/portfolio/Chart.yaml
+  - ../helm/portfolio/values.yaml
+  - ../helm/portfolio/templates/deployment.yaml
+  - ../helm/portfolio/templates/service.yaml
+  - ../helm/portfolio/templates/ingress.yaml
+  - ../helm/portfolio/templates/namespace.yaml
 ---
 
 # Kubernetes Deployment
 
-Kubernetes manifests to deploy the Nginx-based portfolio container.
+Helm chart (`helm/portfolio/`) to deploy the Nginx-based portfolio container.
 
-## Namespace
+## Chart structure
 
-- All resources use a configurable namespace (default: `portfolio`)
-- Manifests include namespace field for clarity
+```
+helm/portfolio/
+  Chart.yaml
+  values.yaml
+  templates/
+    _helpers.tpl
+    namespace.yaml
+    deployment.yaml
+    service.yaml
+    ingress.yaml
+```
 
-## Deployment (`k8s/deployment.yaml`)
+## values.yaml parameters
 
-- 2 replicas for availability
-- Container image: `ghcr.io/<owner>/portfolio:latest` (placeholder for user's registry)
+| Key | Default | Description |
+|-----|---------|-------------|
+| `namespace` | `portfolio` | Kubernetes namespace for all resources |
+| `replicaCount` | `2` | Number of pod replicas |
+| `image.repository` | `ghcr.io/OWNER/portfolio` | Container image repository |
+| `image.tag` | `latest` | Container image tag |
+| `image.pullPolicy` | `IfNotPresent` | Image pull policy |
+| `resources.requests.cpu` | `50m` | CPU request |
+| `resources.requests.memory` | `64Mi` | Memory request |
+| `resources.limits.cpu` | `100m` | CPU limit |
+| `resources.limits.memory` | `128Mi` | Memory limit |
+| `publicContent.hostPath` | `/data/portfolio/public` | Node path mounted into `/usr/share/nginx/html` |
+| `ingress.host` | `portfolio.example.com` | Ingress hostname |
+| `ingress.tls.enabled` | `false` | Enable TLS on the ingress |
+| `ingress.tls.secretName` | `portfolio-tls` | TLS secret name (when TLS enabled) |
+
+`[@test] ../helm/portfolio/values.yaml`
+
+## Deployment (`helm/portfolio/templates/deployment.yaml`)
+
+- Replica count from `values.replicaCount`
+- Image `{{ image.repository }}:{{ image.tag }}`, pull policy from values
 - Port: 80
-- Resource limits: CPU 100m / Memory 128Mi
-- Liveness probe: HTTP GET on `/` port 80
-- Readiness probe: HTTP GET on `/` port 80
+- Resources (requests & limits) from values
+- Liveness probe: HTTP GET `/` port 80, `initialDelaySeconds: 5`, `periodSeconds: 10`
+- Readiness probe: HTTP GET `/` port 80, `initialDelaySeconds: 3`, `periodSeconds: 5`
 - Rolling update strategy: `maxSurge: 1`, `maxUnavailable: 0`
+- `hostPath` volume mounted at `/usr/share/nginx/html` from `values.publicContent.hostPath` (`DirectoryOrCreate`)
 
-`[@test] ../k8s/deployment.yaml`
+`[@test] ../helm/portfolio/templates/deployment.yaml`
 
-## Service (`k8s/service.yaml`)
+## Service (`helm/portfolio/templates/service.yaml`)
 
 - Type: `ClusterIP`
 - Port 80 → container port 80
 - Selector matches deployment labels
 
-`[@test] ../k8s/service.yaml`
+`[@test] ../helm/portfolio/templates/service.yaml`
 
-## Ingress (`k8s/ingress.yaml`)
+## Ingress (`helm/portfolio/templates/ingress.yaml`)
 
-- Ingress resource with placeholder host (e.g., `portfolio.example.com`)
-- Routes `/` to the service on port 80
-- Annotations for common ingress controllers (nginx-ingress)
-- TLS section included but commented out for user to configure
+- `ingressClassName: nginx`
+- Host from `values.ingress.host`
+- Routes path `/` (`pathType: Prefix`) to the service on port 80
+- Annotations: `nginx.ingress.kubernetes.io/rewrite-target: /`, `ssl-redirect` set from `values.ingress.tls.enabled`
+- TLS block rendered only when `values.ingress.tls.enabled` is `true`
 
-`[@test] ../k8s/ingress.yaml`
+`[@test] ../helm/portfolio/templates/ingress.yaml`
