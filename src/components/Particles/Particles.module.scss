@@ -1,0 +1,16 @@
+@use '../../styles/variables' as *;
+
+.container {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+
+    :global(canvas) {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}

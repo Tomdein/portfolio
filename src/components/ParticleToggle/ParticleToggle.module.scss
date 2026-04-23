@@ -1,0 +1,38 @@
+@use '../../styles/variables' as *;
+
+.toggle {
+    position: fixed;
+    bottom: $space-md;
+    right: $space-md;
+    z-index: 10;
+    background: transparent;
+    border: 1px solid $color-border;
+    color: $color-text-muted;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color $transition-fast, border-color $transition-fast, opacity $transition-fast;
+
+    &:hover {
+        color: $color-text;
+        border-color: $color-text-muted;
+    }
+
+    &.on .icon {
+        opacity: 1;
+    }
+
+    &.off .icon {
+        opacity: 0.3;
+    }
+}
+
+.icon {
+    font-size: 1rem;
+    transition: opacity $transition-fast;
+    line-height: 1;
+}

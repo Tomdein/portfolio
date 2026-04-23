@@ -2,10 +2,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import markdownFrontmatter from './plugins/vite-plugin-markdown-frontmatter'
 
 export default defineConfig({
-    plugins: [markdownFrontmatter(), react()],
+    plugins: [react()],
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),

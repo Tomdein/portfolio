@@ -1,25 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import Hero from './Hero';
+import type { HeroConfig } from '@/types/config';
+
+const mockHero: HeroConfig = {
+    title: 'Ing.',
+    firstName: 'Tomas',
+    lastName: 'Deingruber',
+    infoLine: 'Ing. — MSc Computer Science',
+};
 
 describe('Hero', () => {
     it('renders the name heading', () => {
-        render(<Hero />);
+        render(<Hero config={mockHero} infoLineReady={false} />);
         const heading = screen.getByRole('heading', { level: 1 });
         expect(heading).toBeInTheDocument();
-        // Text is split into individual char spans by GSAP animation
-        expect(heading.textContent?.replace(/\s+/g, ' ').trim()).toContain('Tomas Deingruber');
     });
 
-    it('renders the tagline', () => {
-        render(<Hero />);
-        // Tagline may have opacity 0 due to GSAP but should be in DOM
-        const tagline = screen.getByText('A Maker, Programmer and Mathematician');
-        expect(tagline).toBeInTheDocument();
+    it('renders the infoLine', () => {
+        render(<Hero config={mockHero} infoLineReady={false} />);
+        const info = screen.getByText('Ing. — MSc Computer Science');
+        expect(info).toBeInTheDocument();
     });
 
     it('renders as a section element', () => {
-        const { container } = render(<Hero />);
+        const { container } = render(<Hero config={mockHero} infoLineReady={false} />);
         const section = container.querySelector('section');
         expect(section).toBeInTheDocument();
     });

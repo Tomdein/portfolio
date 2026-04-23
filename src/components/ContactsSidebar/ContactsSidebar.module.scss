@@ -1,0 +1,74 @@
+@use '../../styles/variables' as *;
+
+.sidebar {
+    position: fixed;
+    z-index: 10;
+    padding: $space-sm;
+    top: 0%;
+    width: 100vw;
+
+    @include respond-to($bp-wider) {
+        transform: translateY(-50%);
+        top: 50%;
+        display: block;
+        width: auto;
+    }
+}
+
+.left {
+    @include respond-to($bp-wider) {
+        left: $space-md;
+    }
+}
+
+.right {
+    @include respond-to($bp-wider) {
+        right: $space-md;
+    }
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: $space-sm;
+    text-orientation: mixed;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    @include respond-to($bp-wider) {
+        flex-direction: column;
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            height: 1px;
+            width: 3rem;
+            background: $color-border;
+            margin-inline: auto;
+        }
+    }
+}
+
+.item {
+    font-size: $font-size-xs;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.link {
+    color: $color-accent4-muted;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+        color: $color-accent4-muted-hover;
+    }
+}
+
+.plain {
+    color: $color-accent4-muted;
+}

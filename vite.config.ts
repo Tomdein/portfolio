@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import markdownFrontmatter from './plugins/vite-plugin-markdown-frontmatter'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -9,8 +8,12 @@ export default defineConfig({
     port: 5173,
     host: true,
     allowedHosts: ['tomdein.deini.eu'],
+    proxy: {
+      '/images': 'http://localhost:5174',
+      '/content': 'http://localhost:5174',
+    },
   },
-  plugins: [markdownFrontmatter(), react()],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

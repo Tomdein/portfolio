@@ -1,0 +1,95 @@
+@use '../../styles/variables' as *;
+
+.editor {
+    border: 1px solid $color-border;
+    border-radius: 4px;
+    overflow: hidden;
+    background: $color-surface;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-xs $space-sm;
+    border-bottom: 1px solid $color-border;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.filename {
+    font-size: $font-size-sm;
+    font-weight: 600;
+    font-family: monospace;
+    color: $color-text;
+    margin: 0;
+}
+
+.actions {
+    display: flex;
+    gap: $space-xs;
+}
+
+.btn,
+.btnPrimary {
+    padding: 0.25rem 0.75rem;
+    border-radius: 3px;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    border: 1px solid $color-border;
+    transition: background $transition-fast, color $transition-fast;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.btn {
+    background: transparent;
+    color: $color-text-muted;
+
+    &:hover:not(:disabled) {
+        background: $color-border;
+        color: $color-text;
+    }
+}
+
+.btnPrimary {
+    background: $color-accent;
+    color: #fff;
+    border-color: $color-accent;
+
+    &:hover:not(:disabled) {
+        background: $color-accent-hover;
+    }
+}
+
+.textarea {
+    width: 100%;
+    display: block;
+    background: transparent;
+    color: $color-text;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: $font-size-sm;
+    line-height: 1.6;
+    padding: $space-sm;
+    border: none;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.status {
+    padding: $space-xs $space-sm;
+    font-size: $font-size-sm;
+    margin: 0;
+    border-top: 1px solid $color-border;
+}
+
+.success {
+    color: #4caf50;
+}
+
+.error {
+    color: #f44336;
+}

@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "nginx": "bash -c 'docker run --rm -p 5174:80 -v \"$(pwd)/public/images:/usr/share/nginx/html/images\" -v \"$(pwd)/public/content:/usr/share/nginx/html/content\" -v \"$(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf:ro\" -v \"$(pwd)/.htpasswd:/etc/nginx/.htpasswd:ro\" nginx:alpine'",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -12,23 +13,32 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@chenglou/pretext": "^0.0.5",
+    "@gsap/react": "^2.1.2",
+    "canvasparticles-js": "^4.5.5",
+    "dompurify": "^3.4.0",
     "gsap": "^3.15.0",
+    "js-yaml": "^4.1.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.1",
+    "showdown": "^2.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@types/dompurify": "^3.0.5",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@types/showdown": "^2.0.6",
     "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
-    "gray-matter": "^4.0.3",
     "jsdom": "^29.0.2",
     "sass-embedded": "^1.99.0",
     "typescript": "~6.0.2",

@@ -7,21 +7,25 @@
     justify-content: center;
     min-height: 100vh;
     overflow: hidden;
+    padding-inline: $container-padding;
 }
 
 .content {
     text-align: center;
     z-index: 1;
+    width: 100%;
+    max-width: $container-max-width;
 }
 
 .name {
-    font-size: $font-size-hero;
     font-weight: 800;
     letter-spacing: -0.02em;
     margin-bottom: $space-sm;
-    display: inline-flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    line-height: 1.05;
+}
+
+.nameLine {
+    display: block;
 }
 
 .char {
@@ -29,10 +33,12 @@
     will-change: transform, opacity;
 }
 
-.tagline {
+.infoLine {
     font-size: $font-size-tagline;
     font-weight: 300;
     color: $color-text-muted;
     letter-spacing: 0.02em;
     opacity: 0;
+    transform: translateY(20px);
+    will-change: transform, opacity;
 }

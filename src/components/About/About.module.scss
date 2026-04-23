@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: center;
     padding: $space-2xl $container-padding;
-    min-height: 60vh;
+    min-height: 120vh;
 }
 
 .text {
@@ -15,6 +15,11 @@
     line-height: 1.8;
     text-align: center;
     color: $color-text;
+
+    // Showdown wraps content in <p> — reset its margin so it doesn't add extra spacing
+    p {
+        margin: 0;
+    }
 }
 
 .word {
@@ -26,4 +31,6 @@
 .wordInner {
     display: inline-block;
     will-change: transform, opacity;
+    y: 20;
+    opacity: 0;
 }

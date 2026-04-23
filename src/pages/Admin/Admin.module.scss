@@ -1,0 +1,198 @@
+@use '../../styles/variables' as *;
+
+.admin {
+    min-height: 100vh;
+    background: $color-bg;
+    color: $color-text;
+    font-family: $font-family-base;
+}
+
+.loginPage {
+    min-height: 100vh;
+    background: $color-bg;
+    color: $color-text;
+    font-family: $font-family-base;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-sm $container-padding;
+    border-bottom: 1px solid $color-border;
+    position: sticky;
+    top: 0;
+    background: $color-bg;
+    z-index: 10;
+}
+
+.title {
+    font-size: $font-size-xl;
+    font-weight: 700;
+    margin: 0;
+}
+
+.auth {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+}
+
+.authStatus {
+    font-size: $font-size-sm;
+    color: $color-text-muted;
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+}
+
+.signOut {
+    background: transparent;
+    border: none;
+    color: $color-accent;
+    cursor: pointer;
+    font-size: $font-size-sm;
+    padding: 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-accent-hover;
+    }
+}
+
+.btn,
+.btnPrimary {
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    border: 1px solid $color-border;
+    transition: background $transition-fast, color $transition-fast;
+}
+
+.btn {
+    background: transparent;
+    color: $color-text-muted;
+
+    &:hover {
+        background: $color-border;
+        color: $color-text;
+    }
+}
+
+.btnPrimary {
+    background: $color-accent;
+    color: #fff;
+    border-color: $color-accent;
+
+    &:hover {
+        background: $color-accent-hover;
+    }
+}
+
+.main {
+    padding: $space-md $container-padding;
+}
+
+.tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid $color-border;
+    margin-bottom: $space-md;
+}
+
+.tab {
+    padding: 0.5rem 1.25rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    transition: color $transition-fast, border-color $transition-fast;
+    margin-bottom: -1px;
+
+    &:hover {
+        color: $color-text;
+    }
+}
+
+.tabActive {
+    color: $color-text;
+    border-bottom-color: $color-accent;
+}
+
+.grid {
+    display: grid;
+    gap: $space-md;
+
+    @include respond-to($bp-tablet) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @include respond-to($bp-desktop) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    padding: $space-md;
+    width: min(400px, 90vw);
+}
+
+.modalTitle {
+    margin: 0 0 $space-md;
+    font-size: $font-size-lg;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: $font-size-sm;
+    color: $color-text-muted;
+}
+
+.input {
+    background: $color-bg;
+    border: 1px solid $color-border;
+    color: $color-text;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    font-size: $font-size-base;
+    outline: none;
+    transition: border-color $transition-fast;
+
+    &:focus {
+        border-color: $color-accent;
+    }
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $space-xs;
+    margin-top: $space-xs;
+}
