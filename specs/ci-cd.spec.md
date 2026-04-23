@@ -1,14 +1,15 @@
 ---
 name: CI/CD Pipeline
-description: GitHub Actions workflows for testing, building, and deploying
+description: GitHub Actions workflows for testing, building, deploying, and releasing
 targets:
   - ../.github/workflows/ci.yml
   - ../.github/workflows/deploy.yml
+  - ../.github/workflows/release.yml
 ---
 
 # CI/CD Pipeline
 
-GitHub Actions automates testing, building, and container image publishing.
+GitHub Actions automates testing, building, container image publishing, and GitOps releases.
 
 ## CI Workflow (`.github/workflows/ci.yml`)
 
@@ -27,7 +28,7 @@ Triggers on every push and pull request to `main`.
 
 ## Deploy Workflow (`.github/workflows/deploy.yml`)
 
-Triggers on push to `main` branch only (not PRs).
+Triggers on push to `main` branch and on tags matching `v[0-9]+.[0-9]+.[0-9]+` (not PRs).
 
 ### Steps
 
@@ -35,12 +36,38 @@ Triggers on push to `main` branch only (not PRs).
 2. **Setup Node.js** and install dependencies
 3. **Build** the production bundle
 4. **Build Docker image** using the project Dockerfile
-5. **Push** the image to a container registry (GitHub Container Registry `ghcr.io`)
+5. **Push** the image to GitHub Container Registry (`ghcr.io`)
 6. **Tag** with commit SHA and `latest`
 
 ### Secrets Required
 
-- Registry credentials via `GITHUB_TOKEN` (automatic for ghcr.io)
+- `GITHUB_TOKEN` (automatic for ghcr.io)
+
+`[@test] ../.github/workflows/deploy.yml`
+
+## Release Workflow (`.github/workflows/release.yml`)
+
+Triggers **only** on pushed tags matching the pattern `v[0-9]+.[0-9]+.[0-9]+` (e.g. `v1.2.3`).
+No other branches or events trigger this workflow.
+
+### Steps
+
+1. **Checkout** portfolio repo
+2. **Extract version** — strip the leading `v` from the tag (e.g. `v1.2.3` → `1.2.3`)
+3. **Log in to ghcr.io** using `GITHUB_TOKEN`
+4. **Build and push Docker image** — tagged with the extracted version (e.g. `1.2.3`) and `latest`
+5. **Checkout `portfolio-helm` repo** — clone `github.com/Tomdein/portfolio-helm` using `HELM_REPO_PAT`
+6. **Patch `image.tag`** — update `image.tag` in `helm/portfolio/values.yaml` to the extracted version using `yq` or `sed`
+7. **Commit and push** — commit the change to `portfolio-helm` with message `chore: update image tag to <version>`; push to `main`
+
+ArgoCD detects the commit in `portfolio-helm` and syncs the cluster automatically.
+
+### Secrets Required
+
+- `GITHUB_TOKEN` — automatic; used for ghcr.io image push
+- `HELM_REPO_PAT` — Personal Access Token with `contents: write` permission on `github.com/Tomdein/portfolio-helm`
+
+`[@test] ../.github/workflows/release.yml`
 
 ## Dockerfile
 
