@@ -26,25 +26,6 @@ Triggers on every push and pull request to `main`.
 
 `[@test] ../.github/workflows/ci.yml`
 
-## Deploy Workflow (`.github/workflows/deploy.yml`)
-
-Triggers on push to `main` branch and on tags matching `v[0-9]+.[0-9]+.[0-9]+` (not PRs).
-
-### Steps
-
-1. **Checkout** code
-2. **Setup Node.js** and install dependencies
-3. **Build** the production bundle
-4. **Build Docker image** using the project Dockerfile
-5. **Push** the image to GitHub Container Registry (`ghcr.io`)
-6. **Tag** with commit SHA and `latest`
-
-### Secrets Required
-
-- `GITHUB_TOKEN` (automatic for ghcr.io)
-
-`[@test] ../.github/workflows/deploy.yml`
-
 ## Release Workflow (`.github/workflows/release.yml`)
 
 Triggers **only** on pushed tags matching the pattern `v[0-9]+.[0-9]+.[0-9]+` (e.g. `v1.2.3`).

@@ -21,9 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract version
+      - name: Extract version and image name
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE=${REGISTRY}/${IMAGE_NAME,,}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -38,8 +40,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.VERSION }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ steps.version.outputs.IMAGE }}:${{ steps.version.outputs.VERSION }}
+            ${{ steps.version.outputs.IMAGE }}:latest
 
       - name: Checkout portfolio-helm
         uses: actions/checkout@v4
