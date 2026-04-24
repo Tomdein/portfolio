@@ -5,6 +5,8 @@ targets:
   - ../.github/workflows/ci.yml
   - ../.github/workflows/deploy.yml
   - ../.github/workflows/release.yml
+  - ../Dockerfile
+  - ../entrypoint.sh
 ---
 
 # CI/CD Pipeline
@@ -55,8 +57,28 @@ ArgoCD detects the commit in `portfolio-helm` and syncs the cluster automaticall
 Multi-stage build:
 
 1. **Build stage**: Node.js image, install deps, run `npm run build`
-2. **Serve stage**: Nginx alpine image, copy build output to `/usr/share/nginx/html`
+2. **Serve stage**: Nginx alpine image:
+   - Copy build output to `/usr/share/nginx/html` (app bundle, not bind-mounted)
+   - Copy `dist/content` to `/app/defaults/content` (seed data for first deployment)
+   - Copy `dist/images/projects` to `/app/defaults/images/projects` (seed data for first deployment)
+   - Copy `entrypoint.sh` into the image and make it executable
 3. Expose port 80
-4. Custom `nginx.conf` for SPA routing (all routes → `index.html`)
+4. `ENTRYPOINT ["/entrypoint.sh"]`
+
+Custom `nginx.conf` for SPA routing (all routes → `index.html`)
 
 `[@test] ../Dockerfile`
+
+## Entrypoint (`entrypoint.sh`)
+
+Runs before Nginx starts:
+
+- If `/usr/share/nginx/html/content` is empty, seed it from `/app/defaults/content` (first deployment only)
+- If `/usr/share/nginx/html/images/projects` is empty, seed it from `/app/defaults/images/projects` (first deployment only)
+- Then exec `nginx -g "daemon off;"`
+
+The app bundle (`index.html`, `assets/`) is baked into the image and always up to date without any copy step.
+Only the two bind-mounted subdirectories (`content/` and `images/projects/`) are seeded on first run;
+subsequent deployments preserve operator changes to those directories.
+
+`[@test] ../entrypoint.sh`

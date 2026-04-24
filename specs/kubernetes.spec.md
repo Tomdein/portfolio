@@ -39,7 +39,8 @@ helm/portfolio/
 | `resources.requests.memory` | `64Mi` | Memory request |
 | `resources.limits.cpu` | `100m` | CPU limit |
 | `resources.limits.memory` | `128Mi` | Memory limit |
-| `publicContent.hostPath` | `/data/portfolio/public` | Node path mounted into `/usr/share/nginx/html` |
+| `hostPaths.content` | `/data/portfolio/content` | Node path bind-mounted into `/usr/share/nginx/html/content` |
+| `hostPaths.imagesProjects` | `/data/portfolio/images/projects` | Node path bind-mounted into `/usr/share/nginx/html/images/projects` |
 | `ingress.host` | `portfolio.example.com` | Ingress hostname |
 | `ingress.tls.enabled` | `false` | Enable TLS on the ingress |
 | `ingress.tls.secretName` | `portfolio-tls` | TLS secret name (when TLS enabled) |
@@ -61,7 +62,10 @@ and pushes the commit. ArgoCD then detects the change and syncs the cluster.
 - Liveness probe: HTTP GET `/` port 80, `initialDelaySeconds: 5`, `periodSeconds: 10`
 - Readiness probe: HTTP GET `/` port 80, `initialDelaySeconds: 3`, `periodSeconds: 5`
 - Rolling update strategy: `maxSurge: 1`, `maxUnavailable: 0`
-- `hostPath` volume mounted at `/usr/share/nginx/html` from `values.publicContent.hostPath` (`DirectoryOrCreate`)
+- Two `hostPath` volumes (`DirectoryOrCreate`):
+  - `values.hostPaths.content` mounted at `/usr/share/nginx/html/content`
+  - `values.hostPaths.imagesProjects` mounted at `/usr/share/nginx/html/images/projects`
+- The main `/usr/share/nginx/html` directory is **not** bind-mounted; the app bundle is baked into the image
 
 ## Service template requirements
 
