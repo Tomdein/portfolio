@@ -52,7 +52,7 @@ jobs:
 
       - name: Patch image tag in values.yaml
         run: |
-          sed -i 's/^\(\s*tag:\s*\).*$/\1${{ steps.version.outputs.VERSION }}/' portfolio-helm/charts/values.yaml
+          sed -i 's/^\(\s*tag:\s*\).*$/\1${{ steps.version.outputs.VERSION }}/' portfolio-helm/chart/values.yaml
 
       - name: Commit and push to portfolio-helm
         run: |
