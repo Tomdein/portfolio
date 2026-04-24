@@ -38,7 +38,7 @@ No other branches or events trigger this workflow.
 3. **Log in to ghcr.io** using `GITHUB_TOKEN`
 4. **Build and push Docker image** — tagged with the extracted version (e.g. `1.2.3`) and `latest`
 5. **Checkout `portfolio-helm` repo** — clone `github.com/Tomdein/portfolio-helm` using `HELM_REPO_PAT`
-6. **Patch `image.tag`** — update `image.tag` in `helm/portfolio/values.yaml` to the extracted version using `yq` or `sed`
+6. **Patch `image.tag`** — update `image.tag` in `charts/values.yaml` to the extracted version using `yq` or `sed`
 7. **Commit and push** — commit the change to `portfolio-helm` with message `chore: update image tag to <version>`; push to `main`
 
 ArgoCD detects the commit in `portfolio-helm` and syncs the cluster automatically.
